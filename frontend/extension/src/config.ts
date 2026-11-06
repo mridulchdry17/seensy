@@ -7,5 +7,12 @@ export const API_BASE = "https://seensy-api.mridulchdry.workers.dev";
  */
 export const INBOXSDK_APP_ID = "sdk_Test-seensy_d483fac5e9";
 
+/**
+ * OAuth client ID (type "Web application") of the Seensy Google Cloud project. Its authorized
+ * redirect URI must be https://<extension-id>.chromiumapp.org/ — the ID is fixed by the
+ * manifest "key". Must match GOOGLE_CLIENT_ID in backend/wrangler.toml.
+ */
+export const GOOGLE_CLIENT_ID = "";
+
 /** How often the background worker retries queued calls and checks for new opens. */
 export const POLL_MINUTES = 1;

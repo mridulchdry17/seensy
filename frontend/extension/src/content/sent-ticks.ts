@@ -21,17 +21,20 @@ export function tickLabel(emails: EmailSummary[]): LabelDescriptor {
   return { title, maxWidth: "220px", ...OPENED };
 }
 
-async function loadByThread(threadIds: string[]): Promise<EmailSummary[][]> {
-  const summaries = await sendMessage("emails.byThreads", { threadIds });
+async function loadByThread(account: string, threadIds: string[]): Promise<EmailSummary[][]> {
+  const summaries = await sendMessage("emails.byThreads", { account, threadIds });
   return threadIds.map((id) => summaries.filter((s) => s.threadId === id));
 }
 
 export function setupSentTicks(sdk: InboxSDK): void {
-  const lookup = createBatcher(loadByThread, BATCH_DELAY_MS);
+  // A Gmail tab shows one account, so one batcher per tab is enough.
+  let lookup: ((threadId: string) => Promise<EmailSummary[]>) | undefined;
 
   sdk.Lists.registerThreadRowViewHandler(async (row) => {
     try {
-      if ((await accountState(sdk)).kind !== "active") return;
+      const account = await accountState(sdk);
+      if (!account.signedIn) return;
+      lookup ??= createBatcher((ids: string[]) => loadByThread(account.gmail, ids), BATCH_DELAY_MS);
       const emails = await lookup(await row.getThreadIDAsync());
       if (emails.length > 0 && !row.destroyed) row.addLabel(tickLabel(emails));
     } catch {

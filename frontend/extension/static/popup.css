@@ -70,38 +70,9 @@ p { margin: 0; }
   padding-right: 2px;
 }
 .brand { font-size: 14px; }
-.account {
-  margin-left: auto;
-  color: var(--muted);
-  font-size: 11.5px;
-  max-width: 170px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 .card { padding: 16px; display: grid; gap: 10px; }
-form { display: grid; gap: 8px; }
-label { font-size: 12px; color: var(--muted); }
-input[type="password"] {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--sunken);
-  color: var(--fg);
-  font: 12.5px ui-monospace, "SF Mono", Menlo, monospace;
-}
 button { font: inherit; cursor: pointer; }
-.primary {
-  border: 0;
-  border-radius: 8px;
-  padding: 8px 12px;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-}
-.primary:disabled { opacity: 0.6; cursor: progress; }
 .link { border: 0; background: none; color: var(--muted); padding: 0; text-decoration: underline; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -158,8 +129,47 @@ input[role="switch"]:checked::after { left: 16px; }
 .what { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .subject { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .when { color: var(--muted); font-size: 11px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.empty, #feed-error { padding: 4px 16px 16px; }
 
-.foot { display: flex; justify-content: flex-end; padding: 10px 16px; border-top: 1px solid var(--line); }
+.empty, .pad { padding: 4px 16px 16px; }
+.actions { padding-top: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+
+.google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--fg);
+  font-weight: 600;
+}
+.google:hover { background: var(--sunken); }
+.google:disabled { opacity: 0.6; cursor: progress; }
+
+.accounts { list-style: none; margin: 0; padding: 0 16px 4px; }
+.accounts li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 12px;
+}
+.who { min-width: 0; }
+.who strong, .who span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who span { color: var(--muted); font-size: 11.5px; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

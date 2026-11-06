@@ -56,12 +56,11 @@ backend/                   Cloudflare Worker "seensy-api" + D1 "seensy"
   src/models/              SQL, one file per table
   src/schemas/             zod request schemas
   migrations/              D1 migrations (never edit an applied one; add a new file)
-  scripts/create-user.mjs  creates a user and prints their API token once
   test/                    vitest unit tests for pure logic
 frontend/extension/        Chrome MV3 extension (InboxSDK), built with esbuild
   src/background/          service worker: ApiClient, outbox, notifications, messages
   src/content/             in-Gmail: compose tracking, link rewriting, own-view guard, ticks
-  src/popup/               toolbar popup (connect, default tracking, recent activity)
+  src/popup/               toolbar popup (Google sign-in per account, default tracking, activity)
   src/shared/              extension-only helpers (messages, settings, ids, formatting)
   static/                  manifest, popup HTML/CSS, icons
 ```
@@ -78,9 +77,19 @@ into this repo. Do not change its behaviour while the outreach campaign runs.
 | backend | `npm run check` | typecheck + unit tests |
 | backend | `npm run db:migrate` | apply D1 migrations (remote) |
 | backend | `npm run deploy` | deploy the Worker |
-| backend | `npm run user:create -- you@gmail.com` | create a user, print API token |
 | extension | `npm run check` | typecheck + unit tests |
 | extension | `npm run build` / `npm run dev` | build to `dist/` / rebuild on change |
+
+## Accounts and sign-in
+
+- Users sign in with Google (`openid email profile` only; Seensy never uses Gmail APIs, which
+  avoids Google's restricted-scope security assessment). The backend verifies the ID token
+  (`services/google-id-token.ts`) and issues a per-device session token (`sessions` table).
+- The extension keeps one session per Gmail address and only tracks a Gmail tab whose account
+  is signed in. The fixed extension ID comes from the manifest `key`; the Google OAuth client's
+  redirect URI is `https://<extension-id>.chromiumapp.org/`.
+- `GOOGLE_CLIENT_ID` lives in two places that must match: `backend/wrangler.toml` [vars] and
+  `frontend/extension/src/config.ts`.
 
 ## Verdicts (how a hit is judged)
 

@@ -1,11 +1,12 @@
 // Durable, ordered queue for writes to the API. An email is already sent when we register it,
 // so the call must survive offline moments and service-worker restarts.
 import type { RegisterEmailRequest, SelfViewRequest } from "../../../../shared/contracts";
-import { ApiClient, ApiError } from "./api-client";
+import { ApiClient, ApiError, NotSignedInError } from "./api-client";
 
 export type OutboxJob =
-  | { kind: "register"; body: RegisterEmailRequest }
-  | { kind: "thread"; tid: string; threadId: string }
+  | { kind: "register"; account: string; body: RegisterEmailRequest }
+  | { kind: "thread"; account: string; tid: string; threadId: string }
+  /** No account: you may read your own email from another of your signed-in Gmail accounts. */
   | { kind: "selfView"; body: SelfViewRequest };
 
 interface Entry {
@@ -32,36 +33,46 @@ function update(change: (entries: Entry[]) => Entry[]): Promise<void> {
   return next;
 }
 
-function perform(api: ApiClient, job: OutboxJob): Promise<void> {
+/** Records the self-view with whichever signed-in account owns the email. */
+async function recordSelfView(body: SelfViewRequest): Promise<void> {
+  for (const api of await ApiClient.all()) {
+    try {
+      return await api.recordSelfView(body);
+    } catch (error) {
+      if (!(error instanceof ApiError && error.status === 404)) throw error;
+    }
+  }
+  throw new ApiError(404, "None of your signed-in accounts sent this email.");
+}
+
+async function perform(job: OutboxJob): Promise<void> {
   switch (job.kind) {
     case "register":
-      return api.registerEmail(job.body);
+      return (await ApiClient.forAccount(job.account)).registerEmail(job.body);
     case "thread":
-      return api.attachThread(job.tid, job.threadId);
+      return (await ApiClient.forAccount(job.account)).attachThread(job.tid, job.threadId);
     case "selfView":
-      return api.recordSelfView(job.body);
+      return recordSelfView(job.body);
   }
 }
 
-/** Bad input never succeeds on retry. 404 can be a register still queued ahead, so it retries. */
-const isPermanentFailure = (error: unknown) =>
-  error instanceof ApiError && (error.status === 400 || error.status === 403 || error.status === 409);
-
-let flushing: Promise<void> | null = null;
+/**
+ * Never succeeds on retry: bad input, signed out, or (for self-views) not our email.
+ * A 404 on "thread" can be its register still queued ahead, so that one retries.
+ */
+function isPermanentFailure(job: OutboxJob, error: unknown): boolean {
+  if (error instanceof NotSignedInError) return true;
+  if (!(error instanceof ApiError)) return false;
+  return [400, 403, 409].includes(error.status) || (error.status === 404 && job.kind === "selfView");
+}
 
 async function drain(): Promise<void> {
-  let api: ApiClient;
-  try {
-    api = await ApiClient.fromSettings();
-  } catch {
-    return; // not connected yet; jobs wait
-  }
   for (const entry of await load()) {
     try {
-      await perform(api, entry.job);
+      await perform(entry.job);
       await update((entries) => entries.filter((e) => e.id !== entry.id));
     } catch (error) {
-      const giveUp = isPermanentFailure(error) || entry.attempts + 1 >= MAX_ATTEMPTS;
+      const giveUp = isPermanentFailure(entry.job, error) || entry.attempts + 1 >= MAX_ATTEMPTS;
       if (giveUp) console.warn("Seensy dropped a queued call", entry.job.kind, error);
       await update((entries) =>
         giveUp
@@ -72,6 +83,8 @@ async function drain(): Promise<void> {
     }
   }
 }
+
+let flushing: Promise<void> | null = null;
 
 export function flush(): Promise<void> {
   flushing ??= drain().finally(() => {

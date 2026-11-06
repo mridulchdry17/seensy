@@ -8,13 +8,14 @@ import type {
 
 type NoPayload = Record<string, never>;
 
+/** `account` is the Gmail address whose Seensy session should be used. */
 export interface MessageMap {
-  "account.connect": { payload: { apiToken: string }; result: { email: string } };
-  "account.disconnect": { payload: NoPayload; result: null };
-  "email.register": { payload: { body: RegisterEmailRequest }; result: null };
-  "email.attachThread": { payload: { tid: string; threadId: string }; result: null };
+  "account.signIn": { payload: { loginHint?: string }; result: { email: string } };
+  "account.signOut": { payload: { account: string }; result: null };
+  "email.register": { payload: { account: string; body: RegisterEmailRequest }; result: null };
+  "email.attachThread": { payload: { account: string; tid: string; threadId: string }; result: null };
   "selfView.record": { payload: { body: SelfViewRequest }; result: null };
-  "emails.byThreads": { payload: { threadIds: string[] }; result: EmailSummary[] };
+  "emails.byThreads": { payload: { account: string; threadIds: string[] }; result: EmailSummary[] };
   "activity.recent": { payload: NoPayload; result: ActivityItem[] };
 }
 

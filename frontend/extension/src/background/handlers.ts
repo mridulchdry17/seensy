@@ -1,36 +1,42 @@
 import type { AppMessage, MessageMap, MessageType } from "../shared/messages";
-import { saveSettings } from "../shared/settings";
-import { ApiClient } from "./api-client";
+import { getSettings, normaliseEmail, saveSettings } from "../shared/settings";
+import { ApiClient, exchangeGoogleToken } from "./api-client";
+import { signInWithGoogle } from "./google-auth";
+import { activitySince } from "./notifier";
 import { enqueue, flush } from "./outbox";
-import { clearOwnerCookie, setOwnerCookie } from "./owner-cookie";
+import { syncOwnerCookie } from "./owner-cookie";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 type Handlers = { [K in MessageType]: (message: AppMessage<K>) => Promise<MessageMap[K]["result"]> };
 
 const handlers: Handlers = {
-  "account.connect": async ({ apiToken }) => {
-    const token = apiToken.trim();
-    const me = await new ApiClient(token).me();
-    await saveSettings({ apiToken: token, accountEmail: me.email });
-    await setOwnerCookie(me.ownerKey);
+  "account.signIn": async ({ loginHint }) => {
+    const session = await exchangeGoogleToken(await signInWithGoogle(loginHint));
+    const { accounts } = await getSettings();
+    const email = normaliseEmail(session.email);
+    await saveSettings({
+      accounts: { ...accounts, [email]: { token: session.token, ownerKey: session.ownerKey, name: session.name } },
+    });
+    await syncOwnerCookie();
     void flush();
-    return { email: me.email };
+    return { email };
   },
 
-  "account.disconnect": async () => {
-    await saveSettings({ apiToken: "", accountEmail: "" });
-    await clearOwnerCookie();
+  "account.signOut": async ({ account }) => {
+    const { [normaliseEmail(account)]: _removed, ...rest } = (await getSettings()).accounts;
+    await saveSettings({ accounts: rest });
+    await syncOwnerCookie();
     return null;
   },
 
-  "email.register": async ({ body }) => {
-    await enqueue({ kind: "register", body });
+  "email.register": async ({ account, body }) => {
+    await enqueue({ kind: "register", account, body });
     return null;
   },
 
-  "email.attachThread": async ({ tid, threadId }) => {
-    await enqueue({ kind: "thread", tid, threadId });
+  "email.attachThread": async ({ account, tid, threadId }) => {
+    await enqueue({ kind: "thread", account, tid, threadId });
     return null;
   },
 
@@ -39,9 +45,9 @@ const handlers: Handlers = {
     return null;
   },
 
-  "emails.byThreads": async ({ threadIds }) => (await ApiClient.fromSettings()).emailsByThreads(threadIds),
+  "emails.byThreads": async ({ account, threadIds }) => (await ApiClient.forAccount(account)).emailsByThreads(threadIds),
 
-  "activity.recent": async () => (await ApiClient.fromSettings()).activity(Date.now() - WEEK_MS),
+  "activity.recent": () => activitySince(Date.now() - WEEK_MS),
 };
 
 export function handleMessage(message: AppMessage): Promise<unknown> {

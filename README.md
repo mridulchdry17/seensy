@@ -22,9 +22,17 @@ Engineering rules, layout and verdict logic: [CLAUDE.md](CLAUDE.md).
    ```
 3. **Load it in Chrome:** open `chrome://extensions`, turn on **Developer mode**, click
    **Load unpacked**, and choose `frontend/extension/dist`.
-4. **Connect:** click the Seensy icon in Chrome's toolbar and paste your API token from
-   `backend/.secrets/<your-email>.token`.
+4. **Sign in:** click the Seensy icon in Chrome's toolbar and choose **Sign in with Google** with
+   the account you send from. Or open Gmail, compose, and click the Seensy switch: it signs that
+   Gmail account in.
 5. **Reload Gmail.** Every new email shows a ✓✓ switch next to Send.
+
+### One-time Google sign-in setup (owner only)
+
+Create an OAuth client in Google Cloud (type **Web application**) with the authorized redirect URI
+`https://dkhlnebppjkpdpmcfbjmadnjmlgfkeha.chromiumapp.org/`, then put its client ID in both
+`backend/wrangler.toml` (`GOOGLE_CLIENT_ID`) and `frontend/extension/src/config.ts`, deploy the
+backend and rebuild the extension.
 
 ## How a tracked email works
 
@@ -46,7 +54,6 @@ npm install
 npm run check                              # typecheck + unit tests
 npm run db:migrate                         # apply D1 migrations
 npm run deploy                             # check, then deploy the Worker
-npm run user:create -- you@gmail.com       # create a user; token saved to .secrets/
 ```
 
 ## API
@@ -56,6 +63,7 @@ npm run user:create -- you@gmail.com       # create a user; token saved to .secr
 | GET | `/o/:tid.gif` | – | open pixel |
 | GET | `/c/:lid` | – | click redirect |
 | GET | `/health` | – | liveness |
+| POST | `/api/auth/google` | – | exchange a Google ID token for a session |
 | GET | `/api/me` | Bearer | account + owner key |
 | POST | `/api/emails` | Bearer | register a sent email and its links |
 | GET | `/api/emails?threadIds=a,b` | Bearer | summaries (opens, early, clicks) |

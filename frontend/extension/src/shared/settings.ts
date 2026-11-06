@@ -1,10 +1,19 @@
+/** A Gmail account signed in to Seensy on this browser. */
+export interface AccountSession {
+  token: string;
+  ownerKey: string;
+  name: string;
+}
+
 export interface Settings {
-  apiToken: string;
-  accountEmail: string;
+  /** Keyed by normalised Gmail address. */
+  accounts: Record<string, AccountSession>;
   trackByDefault: boolean;
 }
 
-const DEFAULTS: Settings = { apiToken: "", accountEmail: "", trackByDefault: true };
+const DEFAULTS: Settings = { accounts: {}, trackByDefault: true };
+
+export const normaliseEmail = (email: string): string => email.trim().toLowerCase();
 
 export async function getSettings(): Promise<Settings> {
   const stored = await chrome.storage.local.get(Object.keys(DEFAULTS));
