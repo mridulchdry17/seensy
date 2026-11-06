@@ -1,8 +1,9 @@
-import { ID_PATTERN, OWNER_COOKIE } from "../../../shared/contracts";
+import { ID_PATTERN, OWNER_COOKIE, OWNER_KEY_SEPARATOR } from "../../../shared/contracts";
 import { htmlPage, noContent, pixel, readJson, redirect } from "../app/http";
 import { hitMeta, readCookie } from "../app/request-meta";
 import { requireUser } from "../middleware/auth";
-import { selfViewSchema, validate } from "../schemas/email.schema";
+import { selfViewSchema } from "../schemas/email.schema";
+import { validate } from "../schemas/validate";
 import { trackingService } from "../services/tracking.service";
 import type { Handler } from "../types";
 
@@ -24,9 +25,9 @@ export const clickRedirect: Handler = async (ctx) => {
   if (!link) {
     return htmlPage(404, "Link not found", "This link doesn't exist or was mistyped. Ask the sender for a fresh link.");
   }
-  const ownerCookie = readCookie(ctx.request, OWNER_COOKIE);
+  const ownerKeys = (readCookie(ctx.request, OWNER_COOKIE) ?? "").split(OWNER_KEY_SEPARATOR).filter(Boolean);
   ctx.waitUntil(
-    trackingService.recordClick(ctx.env.DB, link, hitMeta(ctx.request), ownerCookie).catch(logFailure("record click")),
+    trackingService.recordClick(ctx.env.DB, link, hitMeta(ctx.request), ownerKeys).catch(logFailure("record click")),
   );
   return redirect(link.url);
 };

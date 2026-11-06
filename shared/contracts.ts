@@ -4,8 +4,12 @@
 export const ID_LENGTH = 12;
 export const ID_PATTERN = /^[a-z0-9]{12}$/;
 
-/** Cookie the extension sets on the API domain so the owner's own clicks are recognised. */
+/**
+ * Cookie the extension sets on the API domain so the owner's own clicks are recognised.
+ * Holds the owner keys of every account signed in on this browser, joined by OWNER_KEY_SEPARATOR.
+ */
 export const OWNER_COOKIE = "sl_owner";
+export const OWNER_KEY_SEPARATOR = ".";
 
 /** Public tracking paths, relative to the API base URL. */
 export const trackingPaths = {
@@ -72,6 +76,21 @@ export interface ActivityItem {
   recipients: string[];
   /** Set for clicks. */
   link: { label: string; kind: string } | null;
+}
+
+export interface GoogleSignInRequest {
+  /** Google ID token (JWT) from the OAuth implicit flow. */
+  idToken: string;
+  /** The nonce the extension put in the auth request; must match the token's nonce claim. */
+  nonce: string;
+}
+
+export interface SignInResponse {
+  /** Session token for `Authorization: Bearer`. Shown once; store it. */
+  token: string;
+  email: string;
+  name: string;
+  ownerKey: string;
 }
 
 export interface MeResponse {

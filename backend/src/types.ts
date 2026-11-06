@@ -1,5 +1,7 @@
 export interface Env {
   DB: D1Database;
+  /** OAuth client ID of the Seensy Google Cloud project (empty until configured). */
+  GOOGLE_CLIENT_ID: string;
 }
 
 export interface User {

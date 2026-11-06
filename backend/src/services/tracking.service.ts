@@ -31,12 +31,13 @@ export const trackingService = {
     return link ? { lid, ...link } : null;
   },
 
-  async recordClick(db: D1Database, link: TrackedLink, meta: HitMeta, ownerCookie: string | null): Promise<void> {
+  /** `browserOwnerKeys`: owner keys of the accounts signed in on the clicking browser (from its cookie). */
+  async recordClick(db: D1Database, link: TrackedLink, meta: HitMeta, browserOwnerKeys: string[]): Promise<void> {
     const [info, burstIds] = await Promise.all([
       emailModel.findTrackingInfo(db, link.emailTid),
       eventModel.findClicksOnOtherLinks(db, link.emailTid, link.lid, meta.at - CLICK_BURST_MS),
     ]);
-    const clickedByOwner = ownerCookie !== null && ownerCookie === info?.ownerKey;
+    const clickedByOwner = info !== null && browserOwnerKeys.includes(info.ownerKey);
     const verdict = classifyClick(
       { at: meta.at, ua: meta.ua, sentAt: info?.sentAt ?? null },
       clickedByOwner,

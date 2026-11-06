@@ -10,3 +10,7 @@ binding = "DB"
 database_name = "seensy"
 database_id = "6c0d6b16-5e57-4106-b8a7-78f97d4cdeb1"
 migrations_dir = "migrations"
+
+[vars]
+# OAuth client ID from the Seensy Google Cloud project (public; not a secret).
+GOOGLE_CLIENT_ID = ""

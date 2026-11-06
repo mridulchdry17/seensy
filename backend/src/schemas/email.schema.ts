@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ID_PATTERN } from "../../../shared/contracts";
-import { HttpError } from "../app/http";
 
 export const trackingIdSchema = z.string().regex(ID_PATTERN, "must be 12 lowercase letters or digits");
 
@@ -39,10 +38,3 @@ export const listEmailsQuerySchema = z.object({
 export const activityQuerySchema = z.object({
   since: z.coerce.number().int().nonnegative().default(0),
 });
-
-/** Validates input against a schema, or throws 400 with field-level details. */
-export function validate<Out>(schema: z.ZodType<Out, z.ZodTypeDef, unknown>, input: unknown): Out {
-  const result = schema.safeParse(input);
-  if (!result.success) throw new HttpError(400, "Invalid request.", result.error.flatten());
-  return result.data;
-}

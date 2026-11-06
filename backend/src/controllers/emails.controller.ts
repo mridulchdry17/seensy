@@ -5,8 +5,8 @@ import {
   listEmailsQuerySchema,
   registerEmailSchema,
   trackingIdSchema,
-  validate,
 } from "../schemas/email.schema";
+import { validate } from "../schemas/validate";
 import { emailService } from "../services/email.service";
 import type { Handler } from "../types";
 

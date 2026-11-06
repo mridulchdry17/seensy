@@ -8,10 +8,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "check": "npm run typecheck && npm run test",
-    "db:migrate": "wrangler d1 migrations apply seensy --remote",
-    "user:create": "node scripts/create-user.mjs"
+    "db:migrate": "wrangler d1 migrations apply seensy --remote"
   },
   "dependencies": {
+    "jose": "^5.10.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
