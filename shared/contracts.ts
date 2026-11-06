@@ -98,6 +98,12 @@ export interface MeResponse {
   ownerKey: string;
 }
 
+export interface WaitlistRequest {
+  email: string;
+  /** Which part of the website the sign-up came from. */
+  source?: string;
+}
+
 export interface ApiErrorBody {
   error: string;
   details?: unknown;

@@ -2,6 +2,8 @@ export interface Env {
   DB: D1Database;
   /** OAuth client ID of the Seensy Google Cloud project (empty until configured). */
   GOOGLE_CLIENT_ID: string;
+  /** Comma-separated website origins allowed to call the API from a browser (CORS). */
+  WEB_ORIGINS: string;
 }
 
 export interface User {
