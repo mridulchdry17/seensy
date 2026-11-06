@@ -12,7 +12,7 @@ export const INBOXSDK_APP_ID = "sdk_Test-seensy_d483fac5e9";
  * redirect URI must be https://<extension-id>.chromiumapp.org/ — the ID is fixed by the
  * manifest "key". Must match GOOGLE_CLIENT_ID in backend/wrangler.toml.
  */
-export const GOOGLE_CLIENT_ID = "";
+export const GOOGLE_CLIENT_ID = "81064856949-r3cb11tggrcg4v42qhpvo7fo4iqgq25t.apps.googleusercontent.com";
 
 /** How often the background worker retries queued calls and checks for new opens. */
 export const POLL_MINUTES = 1;
