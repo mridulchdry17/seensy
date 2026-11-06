@@ -1,0 +1,12 @@
+name = "seensy-api"
+main = "src/index.ts"
+compatibility_date = "2025-10-01"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "seensy"
+database_id = "6c0d6b16-5e57-4106-b8a7-78f97d4cdeb1"
+migrations_dir = "migrations"
