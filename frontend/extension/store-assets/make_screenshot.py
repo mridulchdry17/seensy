@@ -1,4 +1,5 @@
-"""Builds a 1280x800 store screenshot (RGB, no alpha): caption on the left, cropped UI on the right.
+"""Builds a 1280x800 store screenshot (RGB, no alpha) from a cropped UI capture and a caption.
+Tall captures get the caption on the left; wide ones (e.g. a Gmail row) get it on top.
 Usage: python3 make_screenshot.py <input.png> <output.png> "<title>" "<subtitle>"
 """
 import sys
@@ -27,25 +28,36 @@ def main(src, out, title, subtitle):
     canvas = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(canvas)
 
-    # UI on the right, scaled to fit a 620x680 box, with a soft shadow and hairline border.
-    box_w, box_h = 620, 680
-    scale = min(box_w / ui.width, box_h / ui.height)
+    title_font, sub_font = ImageFont.truetype(BOLD, 50), ImageFont.truetype(REGULAR, 26)
+    wide = ui.width / ui.height > 2.2  # e.g. a Gmail list row: caption on top, UI full width below
+
+    if wide:
+        scale = min((W - 140) / ui.width, 360 / ui.height)
+    else:  # e.g. the popup: caption on the left, UI on the right
+        scale = min(620 / ui.width, 680 / ui.height)
     ui = ui.resize((round(ui.width * scale), round(ui.height * scale)), Image.LANCZOS)
-    x = W - 60 - ui.width
-    y = (H - ui.height) // 2
+
+    text_w = W - 140 if wide else W - 60 - ui.width - 130
+    title_lines = wrap(draw, title, title_font, text_w)
+    sub_lines = wrap(draw, subtitle, sub_font, text_w)
+    text_h = len(title_lines) * 60 + 24 + len(sub_lines) * 38
+
+    if wide:
+        gap = 64
+        ty = (H - (text_h + gap + ui.height)) // 2
+        x, y = (W - ui.width) // 2, ty + text_h + gap
+    else:
+        ty = (H - text_h) // 2
+        x, y = W - 60 - ui.width, (H - ui.height) // 2
+
+    # UI with a soft shadow and hairline border.
     shadow = Image.new("L", (W, H), 0)
     ImageDraw.Draw(shadow).rounded_rectangle([x, y + 14, x + ui.width, y + ui.height + 14], 18, fill=70)
     canvas.paste((205, 210, 222), mask=shadow.filter(ImageFilter.GaussianBlur(22)))
     canvas.paste(ui, (x, y))
     draw.rectangle([x - 1, y - 1, x + ui.width, y + ui.height], outline=LINE, width=1)
 
-    # Caption on the left.
-    text_w = x - 60 - 70
-    title_font, sub_font = ImageFont.truetype(BOLD, 50), ImageFont.truetype(REGULAR, 26)
-    title_lines = wrap(draw, title, title_font, text_w)
-    sub_lines = wrap(draw, subtitle, sub_font, text_w)
-    block_h = len(title_lines) * 60 + 24 + len(sub_lines) * 38
-    ty = (H - block_h) // 2
+    # Caption.
     for line in title_lines:
         draw.text((70, ty), line, font=title_font, fill=INK)
         ty += 60
