@@ -11,8 +11,9 @@ Engineering rules, layout and verdict logic: [CLAUDE.md](CLAUDE.md).
 
 ## Run it in your Gmail
 
-1. **Get an InboxSDK app ID** (free): register at https://www.inboxsdk.com/register and put the
-   ID in `frontend/extension/src/config.ts` (`INBOXSDK_APP_ID`).
+1. **Get an InboxSDK app ID** (free): sign in at https://register.inboxsdk.com with your
+   personal Google account, create an app named `seensy` (letters and digits only), and put
+   the ID in `frontend/extension/src/config.ts` (`INBOXSDK_APP_ID`).
 2. **Build the extension:**
    ```sh
    cd frontend/extension

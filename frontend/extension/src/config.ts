@@ -2,7 +2,7 @@
 export const API_BASE = "https://seensy-api.mridulchdry.workers.dev";
 
 /**
- * InboxSDK app ID. Register a free app at https://www.inboxsdk.com/register
+ * InboxSDK app ID. Register a free app at https://register.inboxsdk.com
  * and paste the ID here (it looks like "sdk_seensy_0123456789").
  */
 export const INBOXSDK_APP_ID = "sdk_REPLACE_ME";
