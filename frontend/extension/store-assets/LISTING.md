@@ -25,6 +25,7 @@ Package: `npm run build:store` → `frontend/extension/seensy-store.zip`
 | Support contact | mridul17chaudhary@gmail.com |
 | Store logo (300×300) | `store-assets/logo-300.png` |
 | Small promotional tile (440×280) | `store-assets/promo-tile-440x280.png` |
+| Marquee promo tile (1400×560, Chrome) | `store-assets/marquee-1400x560.png` |
 | Screenshots (1280×800 or 640×480, up to 6) | Compose window with the ✓✓ switch · Sent folder with ✓✓ ticks · Seensy popup with activity |
 
 ### Search terms (max 7)
