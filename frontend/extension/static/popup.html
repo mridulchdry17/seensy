@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Seensy</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <span class="mark" aria-hidden="true">✓✓</span>
+      <strong class="brand">Seensy</strong>
+      <span class="account" id="account"></span>
+    </header>
+
+    <main>
+      <section id="connect-view" class="card" hidden>
+        <h1>Connect your Gmail tracking</h1>
+        <p class="muted">Paste your Seensy API token. You only do this once on this computer.</p>
+        <form id="connect-form" novalidate>
+          <label for="token">API token</label>
+          <input id="token" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="sy_…" required />
+          <button id="connect-button" type="submit" class="primary">Connect</button>
+          <p id="connect-error" class="error" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <section id="main-view" hidden>
+        <label class="switch-row" for="track-default">
+          <span>
+            <span class="row-title">Track new emails</span>
+            <span class="muted small">You can still switch it off per email in Gmail</span>
+          </span>
+          <input id="track-default" type="checkbox" role="switch" />
+        </label>
+
+        <h2>Last 7 days</h2>
+        <ul id="feed" class="feed" aria-live="polite"></ul>
+        <p id="feed-empty" class="empty muted" hidden>
+          No opens yet. When someone opens your email or clicks a link, it shows up here and you get a notification.
+        </p>
+        <p id="feed-error" class="error" role="alert" hidden></p>
+      </section>
+    </main>
+
+    <footer class="foot" id="footer" hidden>
+      <button id="disconnect" type="button" class="link">Disconnect</button>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
