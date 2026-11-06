@@ -2,6 +2,7 @@
 import type { LabelDescriptor } from "@inboxsdk/core";
 import type { EmailSummary } from "../../../../shared/contracts";
 import { sendMessage } from "../shared/messages";
+import { accountState } from "./account";
 import { createBatcher } from "./batch";
 import type { InboxSDK } from "./sdk-types";
 
@@ -30,6 +31,7 @@ export function setupSentTicks(sdk: InboxSDK): void {
 
   sdk.Lists.registerThreadRowViewHandler(async (row) => {
     try {
+      if ((await accountState(sdk)).kind !== "active") return;
       const emails = await lookup(await row.getThreadIDAsync());
       if (emails.length > 0 && !row.destroyed) row.addLabel(tickLabel(emails));
     } catch {

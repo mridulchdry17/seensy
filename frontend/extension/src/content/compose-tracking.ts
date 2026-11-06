@@ -5,6 +5,7 @@ import { API_BASE } from "../config";
 import { newTrackingId } from "../shared/ids";
 import { sendMessage } from "../shared/messages";
 import { getSettings } from "../shared/settings";
+import { accountState, type AccountState } from "./account";
 import { instrumentEmailBody } from "./instrument";
 import type { ComposeView, InboxSDK } from "./sdk-types";
 
@@ -15,10 +16,22 @@ function recipientsOf(compose: ComposeView): string[] {
   return [...new Set(all.map((c) => c.emailAddress.trim().toLowerCase()))];
 }
 
-async function attachTracking(compose: ComposeView): Promise<void> {
-  const { apiToken, trackByDefault } = await getSettings();
-  const connected = Boolean(apiToken);
-  let enabled = connected && trackByDefault;
+function unavailableTooltip(account: Exclude<AccountState, { kind: "active" }>): { title: string; subtitle: string } {
+  if (account.kind === "disconnected") {
+    return {
+      title: "Connect Seensy first",
+      subtitle: "Click the Seensy icon in Chrome's toolbar and paste your API token.",
+    };
+  }
+  return {
+    title: "Seensy isn't tracking this account",
+    subtitle: `It's connected to ${account.connectedEmail}. Switch to that Gmail account to track emails.`,
+  };
+}
+
+async function attachTracking(sdk: InboxSDK, compose: ComposeView): Promise<void> {
+  const [account, { trackByDefault }] = await Promise.all([accountState(sdk), getSettings()]);
+  let enabled = account.kind === "active" && trackByDefault;
 
   // The button is a live stream so the icon and title update in place when toggled.
   let emitter: Emitter<ComposeButtonDescriptor, never> | undefined;
@@ -29,11 +42,8 @@ async function attachTracking(compose: ComposeView): Promise<void> {
     type: "MODIFIER",
     orderHint: 1,
     onClick: () => {
-      if (!connected) {
-        button.showTooltip({
-          title: "Connect Seensy first",
-          subtitle: "Click the Seensy icon in Chrome's toolbar and paste your API token.",
-        });
+      if (account.kind !== "active") {
+        button.showTooltip(unavailableTooltip(account));
         return;
       }
       enabled = !enabled;
@@ -73,6 +83,6 @@ async function attachTracking(compose: ComposeView): Promise<void> {
 
 export function setupComposeTracking(sdk: InboxSDK): void {
   sdk.Compose.registerComposeViewHandler((compose) => {
-    attachTracking(compose).catch((error: unknown) => console.error("Seensy: compose setup failed", error));
+    attachTracking(sdk, compose).catch((error: unknown) => console.error("Seensy: compose setup failed", error));
   });
 }
