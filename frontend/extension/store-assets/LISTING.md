@@ -25,7 +25,7 @@ Package: `npm run build:store` → `frontend/extension/seensy-store.zip`
 | Support contact | mridul17chaudhary@gmail.com |
 | Store logo (300×300) | `store-assets/logo-300.png` |
 | Small promotional tile (440×280) | `store-assets/promo-tile-440x280.png` |
-| Screenshots (1280×800) | Compose window with the ✓✓ switch · Sent folder with ✓✓ ticks · Seensy popup with activity |
+| Screenshots (1280×800 or 640×480, up to 6) | Compose window with the ✓✓ switch · Sent folder with ✓✓ ticks · Seensy popup with activity |
 
 ### Search terms (max 7)
 email tracker · gmail tracking · read receipt · resume tracker · job search · email open tracking · link tracking
@@ -51,6 +51,24 @@ PRIVACY
 Seensy works inside the Gmail page in your browser and never asks Google for permission to read, send or delete your email. It stores the subject, recipients and links of emails you track and when they were opened or clicked — never the email body. Privacy policy: https://seensy.vercel.app/privacy
 
 Free during early access.
+
+## Privacy page (Partner Center → Privacy)
+
+**Single purpose description**
+Seensy tells the user when an email they sent from Gmail on the web is opened and when the links in it are clicked, by adding an open-tracking image and tracked links to emails they choose to track.
+
+**Are you using remote code?** No, I am not using remote code. (All code, including the InboxSDK library, is bundled in the package; nothing is loaded from a server.)
+
+**What user data do you collect?** (tick these)
+- Personally identifiable information: the user's Google email address and name (from Google sign-in), and recipient email addresses of tracked emails.
+- Personal communications: subject line, recipients and link addresses of emails the user chooses to track. Never the email body.
+- Authentication information: a session token for the Seensy API, stored in extension storage.
+
+**Certify:** tick all three — data is not sold to third parties; not used or transferred for purposes unrelated to the extension's single purpose; not used to determine creditworthiness or for lending.
+
+**Privacy policy URL:** https://seensy.vercel.app/privacy
+
+**Permission justification:** use the "Permissions" list in the certification notes below (one line per permission).
 
 ## Notes for certification (paste into "Notes for certification")
 
