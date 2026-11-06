@@ -1,0 +1,23 @@
+{
+  "name": "seensy-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "npm run check && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run test",
+    "db:migrate": "wrangler d1 migrations apply seensy --remote",
+    "user:create": "node scripts/create-user.mjs"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261106.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.157.0"
+  }
+}
