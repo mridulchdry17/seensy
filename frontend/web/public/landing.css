@@ -341,23 +341,6 @@ p { margin: 0; }
 .compose .dots { margin-left: auto; color: var(--muted); letter-spacing: 2px; }
 @media (min-width: 720px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
-/* pricing */
-.plans { display: grid; gap: 16px; margin-top: 36px; }
-.plan { display: flex; flex-direction: column; gap: 14px; padding: 24px; }
-.plan.featured { box-shadow: var(--shadow-x) var(--shadow-y) 0 var(--accent); }
-.plan-name { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; font-size: 20px; }
-.price { font: 700 40px/1 var(--font); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
-.price small { font: 400 14px var(--font); color: var(--muted); letter-spacing: 0; }
-.plan .alt { color: var(--muted); font-size: 14px; margin-top: -6px; }
-.plan ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 15px; flex: 1; }
-.plan li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; }
-.plan li::before { content: "✓"; color: var(--ok); font-weight: 700; }
-.soon { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 4px; font: 500 10.5px var(--mono); letter-spacing: 0.04em; text-transform: uppercase; background: var(--sunken); color: var(--muted); }
-.plan .btn { width: 100%; }
-.pricing-note { margin-top: 16px; color: var(--ink-2); font-size: 15px; max-width: 60ch; }
-@media (min-width: 900px) { .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 899px) and (min-width: 560px) { .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
 /* FAQ */
 .faq { margin-top: 32px; max-width: 760px; border-top: 1.5px solid var(--ink); }
 .faq details { border-bottom: 1px solid var(--line); }
@@ -430,3 +413,10 @@ p { margin: 0; }
   .js .chart:not(.grown) .fill { transform: none; }
   .timeline::after { transform: scaleY(1); }
 }
+
+/* free, for everyone */
+.free-list { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 14px; }
+.free-list li { display: grid; gap: 4px; padding: 20px; }
+.free-list b { font-size: 19px; letter-spacing: -0.01em; }
+.free-list span { font: 500 12.5px var(--mono); letter-spacing: 0.03em; color: var(--muted); }
+@media (min-width: 720px) { .free-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
