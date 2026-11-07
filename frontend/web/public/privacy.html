@@ -8,15 +8,19 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;600&display=swap" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" />
+    <link rel="stylesheet" href="/landing.css" />
   </head>
   <body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="tt" viewBox="0 0 24 16"><path d="M1.5 8.5l4.2 4.2L13 4.5" /><path d="M11 10.6l2.4 2.1L22.5 4.5" /></symbol>
+    </svg>
+
     <header class="site-header">
       <div class="wrap nav">
-        <a class="logo" href="/"><span class="mark" aria-hidden="true">✓✓</span>Seensy</a>
-        <nav class="nav-links" aria-label="Main"><a href="/">Home</a></nav>
-        <a class="button" href="/#early-access">Get early access</a>
+        <a class="logo" href="/"><span class="mark"><svg><use href="#tt" /></svg></span>Seensy</a>
+        <nav class="nav-links" aria-label="Main"><a href="/">home</a></nav>
+        <a class="btn small" href="/#early-access">get_early_access →</a>
       </div>
     </header>
 
@@ -30,6 +34,16 @@
           are clicked. This policy explains what we collect, why, who processes it, and how you can delete it. Contact:
           <a href="mailto:mridul17chaudhary@gmail.com">mridul17chaudhary@gmail.com</a>.
         </p>
+
+        <div class="box summary">
+          <p class="mono"><i>in short</i></p>
+          <ul>
+            <li>We know your name and email from Google sign-in, nothing from your inbox.</li>
+            <li>For emails you track, we store the subject, recipients, links, and when they were opened or clicked.</li>
+            <li class="no">We never store the body of your emails, and we never sell data.</li>
+            <li>Email us from your account's address and we delete everything within 30 days.</li>
+          </ul>
+        </div>
 
         <h2>Information we collect</h2>
         <div class="table-wrap">
@@ -137,13 +151,18 @@
 
     <footer class="site-footer">
       <div class="wrap">
-        <a class="logo" href="/"><span class="mark" aria-hidden="true">✓✓</span>Seensy</a>
-        <span>© 2026 Seensy</span>
+        <a class="logo" href="/"><span class="mark"><svg><use href="#tt" /></svg></span>Seensy</a>
+        <span>© 2026 · built in India</span>
         <nav aria-label="Footer">
           <a href="/">Home</a>
-          <a href="mailto:mridul17chaudhary@gmail.com">mridul17chaudhary@gmail.com</a>
+          <a href="mailto:mridul17chaudhary@gmail.com">Contact</a>
         </nav>
       </div>
     </footer>
+    <script>
+      const h = document.querySelector(".site-header");
+      const u = () => h.classList.toggle("scrolled", window.scrollY > 8);
+      addEventListener("scroll", u, { passive: true }); u();
+    </script>
   </body>
 </html>
