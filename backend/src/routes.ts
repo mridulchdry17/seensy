@@ -1,6 +1,7 @@
 import { Router } from "./app/router";
 import { getMe, health, listActivity, signInWithGoogle } from "./controllers/account.controller";
 import { attachThread, listEmails, registerEmail } from "./controllers/emails.controller";
+import { recordSiteEvent } from "./controllers/site-event.controller";
 import { clickRedirect, openPixel, recordSelfView } from "./controllers/tracking.controller";
 import { joinWaitlist } from "./controllers/waitlist.controller";
 
@@ -11,6 +12,7 @@ export const router = new Router()
   .on("GET", "/health", health)
   .on("POST", "/api/auth/google", signInWithGoogle)
   .on("POST", "/api/waitlist", joinWaitlist)
+  .on("POST", "/api/site-events", recordSiteEvent)
   // Extension API (Bearer session token)
   .on("GET", "/api/me", getMe)
   .on("POST", "/api/emails", registerEmail)

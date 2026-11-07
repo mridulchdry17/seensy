@@ -7,6 +7,47 @@ const DONE_KEY = "seensy:early-access";
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 document.documentElement.classList.add("js");
 
+/* ---------- anonymous site events: event name, page, referring site's host, nothing personal ---------- */
+const refHost = (() => {
+  try {
+    const host = document.referrer ? new URL(document.referrer).hostname : "";
+    return host === location.hostname ? "" : host;
+  } catch {
+    return "";
+  }
+})();
+const sent = new Set();
+function track(name, { once = false } = {}) {
+  if (once && sent.has(name)) return;
+  sent.add(name);
+  const body = JSON.stringify({ name, path: location.pathname, ref: refHost });
+  try {
+    // text/plain keeps it a simple request (no CORS preflight); the API parses it as JSON.
+    navigator.sendBeacon(`${API_BASE}/api/site-events`, new Blob([body], { type: "text/plain" }));
+  } catch {
+    /* analytics must never break the page */
+  }
+}
+track("view", { once: true });
+document.addEventListener("click", (event) => {
+  const target = event.target.closest("[data-track]");
+  if (target) track(target.dataset.track);
+});
+document.querySelectorAll(".faq details").forEach((details, index) => {
+  details.addEventListener("toggle", () => details.open && track(`faq_open:${index + 1}`));
+});
+["board", "numbers", "privacy", "early-access"].forEach((id) => {
+  const section = document.getElementById(id);
+  if (!section || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      io.disconnect();
+      track(`reached:${id}`, { once: true });
+    }
+  }, { threshold: 0.3 });
+  io.observe(section);
+});
+
 const onView = (element, callback, threshold = 0.35) => {
   if (!element) return;
   if (reduceMotion || !("IntersectionObserver" in window)) return callback();
@@ -163,6 +204,7 @@ function wireForm(form) {
     setStatusText(status, "");
     try {
       await joinWaitlist(email, form.dataset.source);
+      track(`signup:${form.dataset.source}`);
       try {
         localStorage.setItem(DONE_KEY, "1");
       } catch {

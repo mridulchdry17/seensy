@@ -27,7 +27,7 @@
     <div class="wrap">
       <main class="doc">
         <h1>Privacy Policy</h1>
-        <p class="updated">Last updated: 7 November 2026</p>
+        <p class="updated">Last updated: 8 November 2026</p>
 
         <p>
           Seensy is a browser extension for Gmail that tells you when an email you sent is opened and when links in it
@@ -76,6 +76,11 @@
                 <td>To tell you when Seensy is available. We send nothing else to this address.</td>
               </tr>
               <tr>
+                <td>Website visits</td>
+                <td>Anonymous counts from Vercel Web Analytics (no cookies), and our own events: which button or section of the site was used, the page, the referring website and the time. No email address, name or network address.</td>
+                <td>To see how many people visit and what they find useful</td>
+              </tr>
+              <tr>
                 <td>Session data</td>
                 <td>A session token per signed-in browser (we store only a hash of it) and a random owner key stored in a cookie on our tracking domain</td>
                 <td>To keep you signed in and recognise clicks on your own links</td>
@@ -111,7 +116,7 @@
           <li><b>Cloudflare</b> hosts our server and database.</li>
           <li><b>Google</b> provides sign-in.</li>
           <li><b>InboxSDK</b> (by Streak), the library the extension uses inside Gmail, sends error reports and usage events to its own servers.</li>
-          <li><b>Vercel</b> hosts this website.</li>
+          <li><b>Vercel</b> hosts this website and provides its cookieless visit statistics.</li>
         </ul>
         <p>We do not sell your data, use it for advertising, or share it with anyone else.</p>
 
@@ -159,6 +164,7 @@
         </nav>
       </div>
     </footer>
+    <script defer src="/_vercel/insights/script.js"></script>
     <script>
       const h = document.querySelector(".site-header");
       const u = () => h.classList.toggle("scrolled", window.scrollY > 8);

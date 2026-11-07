@@ -26,11 +26,11 @@
       <div class="wrap nav">
         <a class="logo" href="/"><span class="mark"><svg><use href="#tt" /></svg></span>Seensy</a>
         <nav class="nav-links" aria-label="Main">
-          <a href="#board">fig. 1 — your sent folder</a>
-          <a href="#privacy">privacy</a>
-          <a href="#faq">faq</a>
+          <a href="#board" data-track="nav:board">fig. 1 — your sent folder</a>
+          <a href="#privacy" data-track="nav:privacy">privacy</a>
+          <a href="#faq" data-track="nav:faq">faq</a>
         </nav>
-        <a class="btn small" href="#early-access">get_early_access →</a>
+        <a class="btn small" href="#early-access" data-track="nav_cta">get_early_access →</a>
       </div>
     </header>
 
@@ -47,7 +47,7 @@
           <label class="visually-hidden" for="hero-email">Your email</label>
           <div class="signup-row">
             <input id="hero-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" placeholder="you@gmail.com" required />
-            <button class="btn" type="submit">Get early access</button>
+            <button class="btn" type="submit" data-track="submit_click">Get early access</button>
           </div>
           <p class="signup-note">sign in with google asks for your <b>name and email only</b>. no gmail access. no card.</p>
           <p class="form-status" role="status" aria-live="polite"></p>
@@ -108,7 +108,7 @@
             <span class="mark"><svg><use href="#tt" /></svg></span>
             <p><b>Kite Labs clicked your Résumé</b><span>Product role at Kite · <time data-notif-time>just now</time></span></p>
           </div>
-          <button class="replay" id="demo-replay" type="button" hidden>replay ↻</button>
+          <button class="replay" id="demo-replay" type="button" data-track="demo_replay" hidden>replay ↻</button>
         </div>
       </section>
 
@@ -224,7 +224,7 @@
             </tbody>
           </table>
         </div>
-        <p class="privacy-links">What Seensy stores: the subject, recipients and links of emails you track, and when they were opened or clicked. <a href="/privacy">Read the full privacy policy</a>.</p>
+        <p class="privacy-links">What Seensy stores: the subject, recipients and links of emails you track, and when they were opened or clicked. <a href="/privacy" data-track="privacy_policy">Read the full privacy policy</a>.</p>
       </section>
 
       <!-- How it works -->
@@ -330,7 +330,7 @@
           <label class="visually-hidden" for="cta-email">Your email</label>
           <div class="signup-row">
             <input id="cta-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" placeholder="you@gmail.com" required />
-            <button class="btn" type="submit">Get early access</button>
+            <button class="btn" type="submit" data-track="submit_click">Get early access</button>
           </div>
           <p class="signup-note">free for everyone. no card, no spam, <b>one email when it's live</b>.</p>
           <p class="form-status" role="status" aria-live="polite"></p>
@@ -350,9 +350,10 @@
     </footer>
 
     <div class="sticky-cta" id="sticky-cta" aria-hidden="true">
-      <a class="btn" href="#early-access" tabindex="-1">Get early access</a>
+      <a class="btn" href="#early-access" tabindex="-1" data-track="sticky_cta">Get early access</a>
     </div>
 
     <script src="/landing.js" defer></script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>
