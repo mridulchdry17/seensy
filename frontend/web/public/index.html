@@ -4,270 +4,341 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Seensy — know when they read your email</title>
-    <meta name="description" content="Seensy shows you when a recruiter or founder opens your email and clicks your résumé or LinkedIn, right inside Gmail. Your own views never count. Free during early access." />
-    <meta property="og:title" content="Seensy — know when they read your email" />
-    <meta property="og:description" content="See who opened your job email and clicked your résumé, right inside Gmail." />
+    <meta name="description" content="Seensy shows you when a recruiter or founder opens your email and clicks your résumé, LinkedIn or portfolio, right inside Gmail. Your own views never count. It never asks for access to your inbox. Free during early access." />
+    <meta property="og:title" content="A founder clicked your Résumé." />
+    <meta property="og:description" content="Seensy shows you when your job email is opened and your résumé is clicked, right inside Gmail. Never asks for inbox access." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://seensy.vercel.app/" />
+    <meta property="og:image" content="https://seensy.vercel.app/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" />
+    <link rel="stylesheet" href="/landing.css" />
   </head>
   <body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="tt" viewBox="0 0 24 16"><path d="M1.5 8.5l4.2 4.2L13 4.5" /><path d="M11 10.6l2.4 2.1L22.5 4.5" /></symbol>
+    </svg>
+
     <header class="site-header" id="top">
       <div class="wrap nav">
-        <a class="logo" href="/"><span class="mark" aria-hidden="true">✓✓</span>Seensy</a>
+        <a class="logo" href="/"><span class="mark"><svg><use href="#tt" /></svg></span>Seensy</a>
         <nav class="nav-links" aria-label="Main">
-          <a href="#features">Features</a>
-          <a href="#privacy">Privacy</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#faq">FAQ</a>
+          <a href="#board">fig. 1 — your sent folder</a>
+          <a href="#privacy">privacy</a>
+          <a href="#pricing">pricing</a>
+          <a href="#faq">faq</a>
         </nav>
-        <a class="button" href="#early-access">Get early access</a>
+        <a class="btn small" href="#early-access">get_early_access →</a>
       </div>
     </header>
 
     <main>
       <!-- Hero -->
       <section class="wrap hero" aria-labelledby="hero-title">
-        <div>
-          <span class="pill"><b>Early access</b> Free while we're in beta</span>
-          <h1 id="hero-title">Know when they read it. <span class="tick" aria-hidden="true">✓✓</span></h1>
-          <p class="lede">
-            Seensy tells you when a recruiter or founder opens your email and clicks your résumé, LinkedIn or
-            portfolio, right inside Gmail. So you follow up with the people who looked, not everyone.
-          </p>
-          <form class="waitlist" data-waitlist data-source="hero" novalidate>
-            <label class="visually-hidden" for="hero-email">Your email</label>
-            <input id="hero-email" name="email" type="email" autocomplete="email" placeholder="you@gmail.com" required />
-            <button class="button" type="submit">Get early access</button>
-          </form>
+        <p class="mono"><i>Gmail extension</i> · free during early access · Chrome, Brave, Edge</p>
+        <h1 id="hero-title">This is what your Sent folder looks like with <span class="hl">Seensy</span>.</h1>
+        <p class="lede">
+          Opens and résumé clicks next to every job email you send. <b>Your own views never count.</b>
+          No access to your inbox, ever.
+        </p>
+        <form class="signup" data-signup data-source="hero" novalidate>
+          <label class="visually-hidden" for="hero-email">Your email</label>
+          <div class="signup-row">
+            <input id="hero-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" placeholder="you@gmail.com" required />
+            <button class="btn" type="submit">Get early access</button>
+          </div>
+          <p class="signup-note">sign in with google asks for your <b>name and email only</b>. no gmail access. no card.</p>
           <p class="form-status" role="status" aria-live="polite"></p>
-          <ul class="trust">
-            <li>Works in Chrome, Brave and Edge</li>
-            <li>Never reads your inbox</li>
-            <li>Your own views never count</li>
-          </ul>
-        </div>
+        </form>
+        <ul class="trust">
+          <li>Works inside Gmail</li>
+          <li>Never reads your inbox</li>
+          <li>Chrome Web Store review pending</li>
+        </ul>
+      </section>
 
-        <div class="demo" aria-label="Example: Seensy in your Gmail Sent folder">
-          <div class="window">
-            <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span>Sent</span></div>
-            <div class="mail-row live" id="demo-row">
-              <span class="label seen" id="demo-label">✓✓ 2× · Résumé</span>
-              <span class="subject"><b>Uolo</b>AI Product Manager role</span>
+      <!-- Fig. 1 — the board -->
+      <section class="wrap board-wrap" id="board" aria-labelledby="fig1-title">
+        <div class="figcap">
+          <span class="mono"><i>fig. 1</i></span>
+          <h2 id="fig1-title" class="visually-hidden">Your Sent folder with Seensy</h2>
+          <span class="mono">your sent folder, with seensy · sample data</span>
+        </div>
+        <div class="board" id="board-el">
+          <div class="box lift ui" aria-label="Gmail Sent list with Seensy ticks">
+            <div class="ui-top"><i></i><i></i><i></i>Sent<span class="r">1–4 of 28 · sample</span></div>
+            <div class="row live" id="demo-row">
+              <span class="marker" aria-hidden="true">1</span>
+              <span class="who">Kite Labs</span>
+              <span class="tag seen st" id="demo-status"><svg class="tt"><use href="#tt" /></svg>2× · résumé</span>
+              <span class="sub"><b>Product role at Kite</b>Hi, I'm Mridul. I own three AI products and…</span>
               <time>10:05</time>
             </div>
-            <div class="mail-row">
-              <span class="label seen">✓✓ 3×</span>
-              <span class="subject"><b>Frammer AI</b>AI Product Manager role</span>
+            <div class="row">
+              <span class="marker" aria-hidden="true">2</span>
+              <span class="who">Arbor</span>
+              <span class="tag seen"><svg class="tt"><use href="#tt" /></svg>3×</span>
+              <span class="sub"><b>Frontend engineer</b>Hi, I saw your post about the rebuild and…</span>
               <time>09:40</time>
             </div>
-            <div class="mail-row">
-              <span class="label seen">✓✓ 2× · Résumé</span>
-              <span class="subject"><b>CogitX AI</b>AI Product Manager role</span>
+            <div class="row">
+              <span class="marker" aria-hidden="true">3</span>
+              <span class="who">Meadow HQ</span>
+              <span class="tag scan">scanner · ignored</span>
+              <span class="sub"><b>Following up</b>Opened 0.4 s after sending. That's a mail filter, not a person.</span>
               <time>Yesterday</time>
             </div>
-            <div class="mail-row">
-              <span class="label sent">✓ Sent</span>
-              <span class="subject"><b>Plutope</b>AI Product Manager role</span>
+            <div class="row">
+              <span class="who">Northstar</span>
+              <span class="tag sent">✓ sent</span>
+              <span class="sub"><b>Design internship</b>Hi, I'm a final-year student at…</span>
               <time>Yesterday</time>
             </div>
           </div>
-          <div class="toast" id="demo-toast">
-            <span class="mark" aria-hidden="true">✓✓</span>
-            <p><b>Uolo clicked your Résumé</b><span>AI Product Manager role · just now</span></p>
+
+          <ul class="callouts" aria-label="What the numbers on the board mean">
+            <li class="call c1"><span class="marker" aria-hidden="true">1</span><span>ticks appear right in gmail's sent list. ✓ sent, then ✓✓ when a person opens it, plus every link they clicked, labelled with the word you wrote.</span></li>
+            <li class="call c2"><span class="marker" aria-hidden="true">2</span><span>opened three times, no clicks yet. they're interested but haven't looked at your work. a good one to follow up on.</span></li>
+            <li class="call c3"><span class="marker" aria-hidden="true">3</span><span>opened within a second of sending? that's a company security scanner. seensy labels it and leaves it out of your counts.</span></li>
+          </ul>
+
+          <div class="notif hidden" id="demo-notif" role="status">
+            <span class="mark"><svg><use href="#tt" /></svg></span>
+            <p><b>Kite Labs clicked your Résumé</b><span>Product role at Kite · <time data-notif-time>just now</time></span></p>
           </div>
-          <button class="replay" id="demo-replay" type="button" hidden>Replay</button>
+          <button class="replay" id="demo-replay" type="button" hidden>replay ↻</button>
         </div>
       </section>
 
-      <!-- Proof -->
-      <section class="proof" aria-label="Results from the founder's own job search">
-        <div class="wrap">
-          <p class="proof-note"><b>Built during a real job search</b>The founder's own cold emails, tracked with Seensy, November 2026.</p>
-          <div class="stat"><b>28</b><span>cold emails to founders</span></div>
-          <div class="stat highlight"><b>39%</b><span>opened within two days</span></div>
-          <div class="stat"><b>3</b><span>opened the résumé</span></div>
+      <!-- Fig. 2 — founder's numbers -->
+      <section class="wrap chapter" id="numbers" aria-labelledby="fig2-title">
+        <div class="chapter-head reveal">
+          <p class="mono"><i>fig. 2</i> · built during a real job search</p>
+          <h2 id="fig2-title">What the founder saw in his own first batch.</h2>
+          <p>Twenty-eight cold emails to startup founders, tracked with Seensy. The three who opened the résumé were the ones worth following up with. The rest, he stopped waiting on.</p>
+        </div>
+        <div class="box chart reveal" id="chart" aria-label="Bar chart: 28 emails sent, 11 opened within two days, 3 résumé clicks">
+          <div class="bar"><span class="label">cold emails sent</span><div class="track"><div class="fill" style="--w: 100%"></div></div><span class="val">28</span></div>
+          <div class="bar hl"><span class="label">opened within 2 days</span><div class="track"><div class="fill d2" style="--w: 39%"></div></div><span class="val">11 <small>· 39%</small></span></div>
+          <div class="bar"><span class="label">opened the résumé</span><div class="track"><div class="fill d3" style="--w: 11%"></div></div><span class="val">3</span></div>
+          <div class="chart-foot">
+            <span class="mono">n = 28 · nov 2026 · one person's data</span>
+            <span class="mono">your numbers will differ</span>
+          </div>
         </div>
       </section>
 
-      <!-- Features -->
-      <section class="wrap section" id="features" aria-labelledby="features-title">
-        <div class="section-head">
-          <p class="eyebrow">What you get</p>
-          <h2 id="features-title">Stop guessing. Follow up with the people who looked.</h2>
-          <p class="lede">Every open and every click, per email, without leaving Gmail.</p>
+      <!-- Fig. 3 — timeline -->
+      <section class="wrap chapter" id="timeline-section" aria-labelledby="fig3-title">
+        <div class="chapter-head reveal">
+          <p class="mono"><i>fig. 3</i> · one email, in order</p>
+          <h2 id="fig3-title">Every open and every click, with the time.</h2>
+          <p>You see when they first looked, when they came back, and which link they cared about. That's what tells you when to follow up.</p>
         </div>
-
-        <div class="bento">
-          <article class="card wide">
-            <h3>See every open and résumé click</h3>
-            <p>A timeline for each email: when they opened it, came back to it, and which links they clicked.</p>
-            <div class="visual" aria-label="Example timeline for one email">
-              <ol class="timeline">
-                <li><time>19:05</time><span class="dot"></span><span>Uolo opened your email</span></li>
-                <li><time>19:06</time><span class="dot click"></span><span>Clicked <b>Résumé</b> · Google Drive</span></li>
-                <li><time>22:30</time><span class="dot"></span><span>Opened it again</span></li>
-                <li><time>22:31</time><span class="dot click"></span><span>Clicked <b>LinkedIn</b></span></li>
-              </ol>
-            </div>
-          </article>
-
-          <article class="card wide">
-            <h3>Your own views never count</h3>
-            <p>Reading your sent email or clicking your own links is recognised and left out, so every open you see is theirs.</p>
-            <div class="visual compare-rows" aria-label="Example: your view is ignored, theirs is counted">
-              <div class="ignored"><span>You opened it in Sent</span><span class="tag muted">Ignored</span></div>
-              <div><span>Uolo opened it on their phone</span><span class="tag">Counted</span></div>
-            </div>
-          </article>
-
-          <article class="card third">
-            <h3>Every link, automatically</h3>
-            <p>Links you add are tracked when you press Send. No special steps.</p>
-            <div class="chips"><span class="chip">Résumé</span><span class="chip">LinkedIn</span><span class="chip">GitHub</span><span class="chip">Portfolio</span></div>
-          </article>
-
-          <article class="card third">
-            <h3>Scanners filtered out</h3>
-            <p>Company security filters that open every email instantly are labelled, not counted as a real reader.</p>
-          </article>
-
-          <article class="card third">
-            <h3>All your Gmail accounts</h3>
-            <p>Sign in each account with Google. Each one's tracking stays separate.</p>
-          </article>
+        <div class="timeline-wrap">
+          <ol class="timeline reveal" id="timeline">
+            <li><time>tue 10:05</time><span class="what"><b>Sent</b> to Kite Labs</span></li>
+            <li class="muted"><time>tue 10:05</time><span class="what">Security scanner opened it 0.4 s later · <span class="tag scan">ignored</span></span></li>
+            <li><time>tue 19:05</time><span class="what"><b>Opened</b> on a phone</span></li>
+            <li class="click"><time>tue 19:06</time><span class="what">Clicked <b>Résumé</b> · Google Drive</span></li>
+            <li><time>tue 22:30</time><span class="what"><b>Opened again</b> on a laptop</span></li>
+            <li class="click"><time>tue 22:31</time><span class="what">Clicked <b>LinkedIn</b></span></li>
+          </ol>
+          <div class="aside-notes reveal">
+            <p class="note"><b>opened twice and came back for linkedin.</b> that's the email to follow up on tomorrow morning.</p>
+            <p class="note"><b>still ✓ sent after three days?</b> stop waiting on it and move on. that's useful too.</p>
+            <p class="note"><b>your own views are recognised and left out.</b> reread your sent email ten times; the count stays theirs.</p>
+          </div>
         </div>
+      </section>
+
+      <!-- Fig. 4 — the popup -->
+      <section class="wrap chapter" id="popup-section" aria-labelledby="fig4-title">
+        <div class="chapter-head reveal">
+          <p class="mono"><i>fig. 4</i> · the toolbar popup</p>
+          <h2 id="fig4-title">A feed of the last seven days, one click away.</h2>
+        </div>
+        <div class="popup-wrap">
+          <div class="box lift popup reveal" aria-label="Seensy popup">
+            <div class="ui-top"><span class="mark" style="width:22px;height:22px;border-radius:6px"><svg style="width:14px;height:14px"><use href="#tt" /></svg></span>Seensy</div>
+            <div class="popup-sec">
+              <p class="mono">tracking</p>
+              <div class="acct"><i>M</i><div>Mridul<span>mridul@gmail.com</span></div><a>sign out</a></div>
+            </div>
+            <div class="popup-sec">
+              <div class="switch"><div>Track new emails<span>You can still switch it off per email in Gmail</span></div><span class="toggle" aria-hidden="true"></span></div>
+            </div>
+            <div class="popup-sec">
+              <p class="mono">last 7 days</p>
+              <div class="feed">
+                <div><i class="c"></i><div>Kite Labs clicked your Résumé<span>Product role at Kite</span></div><time data-notif-time>just now</time></div>
+                <div><i></i><div>Kite Labs opened your email<span>Product role at Kite</span></div><time>19:05</time></div>
+                <div><i></i><div>Arbor opened your email (3rd time)<span>Frontend engineer</span></div><time>yesterday</time></div>
+              </div>
+            </div>
+          </div>
+          <div class="popup-notes reveal">
+            <p class="note"><b>one switch.</b> tracking is on for new emails by default. the ✓✓ button next to send turns it off for any single email.</p>
+            <p class="note"><b>every link, automatically.</b> add links the normal way; when you press send, each one is tracked and labelled with the words you wrote. links in quoted replies are left alone.</p>
+            <p class="note"><b>desktop notifications</b> the moment it happens, so you can follow up while you're still on their mind.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fig. 5 — privacy -->
+      <section class="wrap chapter" id="privacy" aria-labelledby="fig5-title">
+        <div class="chapter-head reveal">
+          <p class="mono"><i>fig. 5</i> · what google asks you</p>
+          <h2 id="fig5-title">We can't read your email. Here's the screen that proves it.</h2>
+          <p>Seensy works inside the Gmail page in your browser, so it never needs permission to read, send or delete your mail.</p>
+        </div>
+        <div class="consent-grid">
+          <div class="box consent us reveal">
+            <div class="consent-title">Seensy asks for <span class="tag seen">name + email</span></div>
+            <div class="screen" aria-label="Google sign-in screen for Seensy">
+              <div class="g"><b>G</b> Sign in with Google · Seensy</div>
+              <div class="scope yes"><span class="ic">✓</span><span>See your name, email address and profile picture</span></div>
+            </div>
+            <p class="consent-foot">that's the whole list. nothing from your inbox.</p>
+          </div>
+          <div class="box consent reveal">
+            <div class="consent-title">Many email trackers ask for <span class="tag scan">full gmail</span></div>
+            <div class="screen" aria-label="What other trackers typically ask Google for">
+              <div class="g"><b>G</b> Sign in with Google</div>
+              <div class="scope yes"><span class="ic">✓</span><span>See your name, email address and profile picture</span></div>
+              <div class="scope no"><span class="ic">!</span><span>Read, compose, send and permanently delete all your email from Gmail</span></div>
+            </div>
+            <p class="consent-foot">their servers handle your mail. seensy never asks for this.</p>
+          </div>
+        </div>
+        <div class="ledger-wrap reveal">
+          <table class="ledger">
+            <thead><tr><th scope="col"></th><th scope="col">Seensy</th><th scope="col">Many email trackers</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Access to your inbox</th><td class="us">None</td><td class="them">Full read and send access</td></tr>
+              <tr><th scope="row">Your email body</th><td class="us">Never stored</td><td class="them">Passes through their servers</td></tr>
+              <tr><th scope="row">Your own opens</th><td class="us">Never counted</td><td class="them">Often counted</td></tr>
+              <tr><th scope="row">Built for</th><td class="us">Job seekers, priced in rupees</td><td class="them">Sales teams, priced in dollars</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="privacy-links">What Seensy stores: the subject, recipients and links of emails you track, and when they were opened or clicked. <a href="/privacy">Read the full privacy policy</a>.</p>
       </section>
 
       <!-- How it works -->
-      <section class="wrap section" id="how" aria-labelledby="how-title">
-        <div class="section-head">
-          <p class="eyebrow">How it works</p>
-          <h2 id="how-title">Set up in a minute. Works in the Gmail you already use.</h2>
+      <section class="wrap chapter" id="how" aria-labelledby="how-title">
+        <div class="chapter-head reveal">
+          <p class="mono"><i>setup</i> · about a minute</p>
+          <h2 id="how-title">Works in the Gmail you already use.</h2>
         </div>
         <ol class="steps">
-          <li>
+          <li class="box reveal">
             <h3>Add Seensy and sign in</h3>
-            <p>Install the extension and sign in with Google. It only sees your name and email address.</p>
+            <p>Install it in Chrome, Brave or Edge and sign in with Google. It only receives your name and email address.</p>
           </li>
-          <li>
+          <li class="box reveal">
             <h3>Send as usual</h3>
-            <p>A ✓✓ switch sits next to Send. Leave it on to track that email, or switch it off for one email.</p>
+            <p>A ✓✓ switch sits next to Send. Leave it on to track that email, or turn it off for one.</p>
+            <div class="compose" aria-label="Example: the Seensy switch next to Gmail's Send button">
+              <span class="send">Send</span>
+              <span class="sw"><svg class="tt"><use href="#tt" /></svg>tracking on</span>
+              <span class="dots" aria-hidden="true">···</span>
+            </div>
           </li>
-          <li>
+          <li class="box reveal">
             <h3>See who's interested</h3>
-            <p>Ticks appear in your Sent folder and a live feed shows every open and résumé click.</p>
+            <p>Ticks appear next to each email in Sent, and the popup shows every open and click from the last seven days.</p>
           </li>
         </ol>
       </section>
 
-      <!-- Privacy band -->
-      <section class="band" id="privacy" aria-labelledby="privacy-title">
-        <div class="wrap">
-          <div>
-            <p class="eyebrow">Privacy</p>
-            <h2 id="privacy-title">Asks Google for your name. Not your inbox.</h2>
-            <p class="lede">
-              Seensy works inside the Gmail page in your browser, so it never needs permission to read, send or
-              delete your mail. It stores only what it needs to show you who opened what.
-              <a href="/privacy">Read the privacy policy</a>.
-            </p>
-          </div>
-          <div class="versus-wrap">
-            <table class="versus">
-              <thead><tr><th scope="col"></th><th scope="col">Seensy</th><th scope="col">Many email trackers</th></tr></thead>
-              <tbody>
-                <tr><th scope="row">Google access</th><td class="us">Your name and email address</td><td class="them">Read, compose, send and delete all your email</td></tr>
-                <tr><th scope="row">Email body</th><td class="us">Never stored</td><td class="them">Passes through their servers</td></tr>
-                <tr><th scope="row">Your own opens</th><td class="us">Never counted</td><td class="them">Often counted</td></tr>
-                <tr><th scope="row">Built for</th><td class="us">Job seekers, priced in rupees</td><td class="them">Sales teams</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
       <!-- Pricing -->
-      <section class="wrap section" id="pricing" aria-labelledby="pricing-title">
-        <div class="section-head">
-          <p class="eyebrow">Pricing</p>
-          <h2 id="pricing-title">Free to start. Priced for a job search.</h2>
+      <section class="wrap chapter" id="pricing" aria-labelledby="pricing-title">
+        <div class="chapter-head reveal">
+          <p class="mono"><i>pricing</i> · planned, not final</p>
+          <h2 id="pricing-title">Free now. Priced for a job search later.</h2>
+          <p>Everything is free during early access. When paid plans arrive, early-access users get a discount.</p>
         </div>
         <div class="plans">
-          <article class="plan">
+          <article class="box plan reveal">
             <div class="plan-name">Free</div>
             <div class="price">₹0 <small>forever</small></div>
             <ul>
               <li>30 tracked emails a month</li>
               <li>Opens and link clicks</li>
-              <li>Ticks in Gmail and a live feed</li>
+              <li>Ticks in Gmail and the popup feed</li>
               <li>Your own views excluded</li>
             </ul>
-            <a class="button ghost" href="#early-access" data-plan="free">Get early access</a>
+            <a class="btn ghost" href="#early-access">Get early access</a>
           </article>
-
-          <article class="plan featured">
-            <div class="plan-name">Pro <span class="tag">Recommended</span></div>
+          <article class="box plan featured reveal">
+            <div class="plan-name">Pro <span class="tag seen">recommended</span></div>
             <div class="price">₹149 <small>/ month</small></div>
             <p class="alt">or ₹399 for 3 months, about one job search</p>
             <ul>
               <li>Unlimited tracked emails</li>
               <li>Everything in Free</li>
-              <li>Time spent on your résumé <span class="soon">Soon</span></li>
-              <li>WhatsApp alerts on opens <span class="soon">Soon</span></li>
-              <li>Follow-up reminders <span class="soon">Soon</span></li>
+              <li>Time spent on your résumé <span class="soon">soon</span></li>
+              <li>WhatsApp alerts on opens <span class="soon">soon</span></li>
+              <li>Follow-up reminders <span class="soon">soon</span></li>
             </ul>
-            <a class="button" href="#early-access" data-plan="pro">Get early access</a>
+            <a class="btn" href="#early-access">Get early access</a>
           </article>
-
-          <article class="plan">
+          <article class="box plan reveal">
             <div class="plan-name">Campus</div>
             <div class="price">Custom</div>
             <ul>
               <li>For placement cells and bootcamps</li>
               <li>Pro for every student</li>
-              <li>Bulk seats and simple billing</li>
-              <li>Cohort dashboard <span class="soon">Soon</span></li>
+              <li>See which recruiters went quiet</li>
+              <li>Students keep their own data</li>
             </ul>
-            <a class="button ghost" href="mailto:mridul17chaudhary@gmail.com?subject=Seensy%20for%20our%20campus">Talk to us</a>
+            <a class="btn ghost" href="mailto:mridul17chaudhary@gmail.com?subject=Seensy%20for%20our%20campus">Talk to us</a>
           </article>
         </div>
-        <p class="early-note">Everything is free during early access. Paid plans start after launch, and early users get a discount.</p>
       </section>
 
       <!-- FAQ -->
-      <section class="wrap section" id="faq" aria-labelledby="faq-title">
-        <div class="section-head">
-          <p class="eyebrow">FAQ</p>
-          <h2 id="faq-title">Questions, answered</h2>
+      <section class="wrap chapter" id="faq" aria-labelledby="faq-title">
+        <div class="chapter-head reveal">
+          <p class="mono"><i>faq</i> · straight answers</p>
+          <h2 id="faq-title">Questions people ask before installing.</h2>
         </div>
-        <div class="faq">
+        <div class="faq reveal">
           <details>
             <summary>Does Seensy read my emails?</summary>
-            <p>No. Seensy only asks Google for your name and email address. It adds tracking to emails you choose when you press Send, and stores their subject, recipients and links, never the message body.</p>
+            <p>No. It never gets permission to read or send your Gmail. For emails you choose to track it stores the subject, the recipients, the links and when they were opened or clicked. Never the message body.</p>
           </details>
           <details>
             <summary>How does it know when someone opens my email?</summary>
-            <p>Seensy adds an invisible image to the email. When the recipient's mail app loads it, we record an open. Links go through Seensy first, so a click is recorded and then opens the real page straight away.</p>
+            <p>When you press Send, Seensy adds a tiny invisible image to the email and routes each link through Seensy first. When the recipient's mail app loads the image, that's an open. When they click a link, that's recorded and they're sent straight to the real page.</p>
           </details>
           <details>
-            <summary>How accurate are opens?</summary>
-            <p>Clicks are very reliable. Opens are a strong signal but not perfect: some apps block images (missed opens), Apple Mail can load them automatically (extra opens), and Gmail caches images, so a second open isn't always counted. Seensy labels hits in the first minute as "early" because they're often security scanners.</p>
+            <summary>How accurate are the opens?</summary>
+            <p>Clicks are very reliable. Opens are a strong signal but not perfect: some mail apps block images, so a missing ✓✓ doesn't always mean unread, and Apple Mail can load images on its own, which can look like an open. Seensy labels hits in the first minute as scanners and never counts your own views.</p>
           </details>
           <details>
-            <summary>Will the recipient know?</summary>
-            <p>The email looks exactly as you wrote it. Hovering over a link shows that it goes through Seensy before the real page.</p>
+            <summary>Will the recruiter know I'm tracking?</summary>
+            <p>The email looks exactly as you wrote it. There's no badge or banner. If they hover over a link they'll see it goes through Seensy before the real page, the same way links in most newsletters and sales emails work.</p>
           </details>
           <details>
-            <summary>Does it work on my phone?</summary>
-            <p>You send from Gmail on a computer in Chrome, Brave or Edge. Recipients can open your email anywhere, including their phone, and it's tracked.</p>
+            <summary>Does it count when I open my own sent email?</summary>
+            <p>No. Seensy recognises your own views and clicks and leaves them out, so every open you see is theirs.</p>
           </details>
           <details>
-            <summary>Can I switch it off for one email?</summary>
-            <p>Yes. Click the ✓✓ switch next to Send before sending. You can also make "off" the default in the extension.</p>
+            <summary>Does it work on my phone or in Outlook?</summary>
+            <p>You send from Gmail on a computer, in Chrome, Brave or Edge. Recipients can open your email anywhere, phone included, and it's tracked. Outlook and the Gmail mobile app aren't supported for sending yet.</p>
+          </details>
+          <details>
+            <summary>Is it on the Chrome Web Store?</summary>
+            <p>It's in review. Leave your email and you'll get the install link the day it's approved.</p>
+          </details>
+          <details>
+            <summary>What will it cost?</summary>
+            <p>Nothing during early access. The planned Pro plan is about ₹149 a month, or ₹399 for three months. Early-access users get a discount when that arrives.</p>
           </details>
           <details>
             <summary>How do I delete my data?</summary>
@@ -275,32 +346,35 @@
           </details>
         </div>
       </section>
-
-      <!-- Final CTA -->
-      <section class="final" id="early-access" aria-labelledby="cta-title">
-        <div class="wrap">
-          <div class="final-card">
-            <div>
-              <h2 id="cta-title">Your next follow-up should go to someone who looked.</h2>
-              <p class="lede" style="margin-top: 12px">Join early access. We'll email you the install link when Seensy is live in the Edge Add-ons store.</p>
-            </div>
-            <div>
-              <form class="waitlist" data-waitlist data-source="footer" novalidate>
-                <label class="visually-hidden" for="cta-email">Your email</label>
-                <input id="cta-email" name="email" type="email" autocomplete="email" placeholder="you@gmail.com" required />
-                <button class="button" type="submit">Get early access</button>
-              </form>
-              <p class="form-status" role="status" aria-live="polite"></p>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
+
+    <!-- Closing (dark band) -->
+    <section class="closing" id="early-access" aria-labelledby="cta-title">
+      <div class="wrap">
+        <div>
+          <div class="big-notif" aria-hidden="true">
+            <span class="mark"><svg><use href="#tt" /></svg></span>
+            <p><b>Kite Labs clicked your Résumé</b><span>Product role at Kite · <time data-notif-time>just now</time></span></p>
+          </div>
+          <h2 id="cta-title" style="margin-top:28px">Your next cold email could be the one. Know if it got read.</h2>
+          <p class="lede">Join early access and we'll email you the install link the day Seensy is approved on the Chrome Web Store.</p>
+        </div>
+        <form class="signup" data-signup data-source="footer" novalidate>
+          <label class="visually-hidden" for="cta-email">Your email</label>
+          <div class="signup-row">
+            <input id="cta-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" placeholder="you@gmail.com" required />
+            <button class="btn" type="submit">Get early access</button>
+          </div>
+          <p class="signup-note">free during early access. no card, no spam, <b>one email when it's live</b>.</p>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
 
     <footer class="site-footer">
       <div class="wrap">
-        <a class="logo" href="/"><span class="mark" aria-hidden="true">✓✓</span>Seensy</a>
-        <span>© 2026 Seensy</span>
+        <a class="logo" href="/"><span class="mark"><svg><use href="#tt" /></svg></span>Seensy</a>
+        <span>© 2026 · built in India</span>
         <nav aria-label="Footer">
           <a href="/privacy">Privacy policy</a>
           <a href="mailto:mridul17chaudhary@gmail.com">Contact</a>
@@ -308,6 +382,10 @@
       </div>
     </footer>
 
-    <script src="/site.js" defer></script>
+    <div class="sticky-cta" id="sticky-cta" aria-hidden="true">
+      <a class="btn" href="#early-access" tabindex="-1">Get early access</a>
+    </div>
+
+    <script src="/landing.js" defer></script>
   </body>
 </html>
