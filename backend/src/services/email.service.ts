@@ -7,6 +7,13 @@ import type { User } from "../types";
 import { linkKind, linkLabel } from "./link-kind";
 
 const RECENT_LIMIT = 50;
+/**
+ * The sender's own browser loads the pixel while Gmail sends, sometimes a moment before the
+ * email is registered. Hits that early can't be the recipient (it isn't delivered yet), so on
+ * registration they are relabelled as the owner's. Kept short so a registration delayed by the
+ * retry queue never swallows a real open.
+ */
+const PRE_REGISTER_SELF_MS = 2 * 60_000;
 
 const isUniqueViolation = (error: unknown) => error instanceof Error && /UNIQUE constraint failed/i.test(error.message);
 
@@ -36,13 +43,14 @@ async function summarise(db: D1Database, emails: EmailRecord[]): Promise<EmailSu
 export const emailService = {
   /** Idempotent: re-registering an email the user already owns succeeds (the extension retries). */
   async register(db: D1Database, user: User, input: RegisterEmailRequest): Promise<void> {
+    const sentAt = Date.now();
     const statements = [
       emailModel.insertStatement(db, {
         tid: input.tid,
         userId: user.id,
         subject: input.subject,
         recipients: input.recipients,
-        sentAt: Date.now(),
+        sentAt,
       }),
       ...input.links.map((link) =>
         linkModel.insertStatement(db, {
@@ -56,6 +64,7 @@ export const emailService = {
     ];
     try {
       await db.batch(statements);
+      await eventModel.relabelOpens(db, input.tid, sentAt - PRE_REGISTER_SELF_MS, sentAt, "self");
     } catch (error) {
       if (!isUniqueViolation(error)) throw error;
       if (await emailModel.isOwnedBy(db, user.id, input.tid)) return;
