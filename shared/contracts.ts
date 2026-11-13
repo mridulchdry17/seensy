@@ -78,6 +78,64 @@ export interface ActivityItem {
   link: { label: string; kind: string } | null;
 }
 
+/** Outcome the user sets on an email. An email with a stage leaves the Hot/Warm ranking. */
+export const STAGES = ["replied", "interview", "offer", "closed"] as const;
+export type Stage = (typeof STAGES)[number];
+
+/**
+ * How an email is doing compared with the user's other emails (never fixed thresholds):
+ * `hot` = among the most active right now, `warm` = more active than most,
+ * `seen` = opened, nothing stands out, `none` = no real open yet.
+ */
+export type Signal = "hot" | "warm" | "seen" | "none";
+
+export interface BoardEmail {
+  tid: string;
+  subject: string;
+  recipients: string[];
+  sentAt: number;
+  threadId: string | null;
+  stage: Stage | null;
+  signal: Signal;
+  /** Sittings: opens and clicks less than 30 minutes apart count once. */
+  visits: number;
+  /** Different days (in the user's time zone) with activity. */
+  openDays: number;
+  clicks: LinkClickSummary[];
+  lastActivityAt: number | null;
+  /** Hits within a minute of sending (maybe a scanner); not counted anywhere else. */
+  early: number;
+}
+
+export interface BoardResponse {
+  emails: BoardEmail[];
+  /** Calendar yesterday in the user's time zone. */
+  yesterday: { sent: number; opened: number; clicks: number };
+}
+
+export interface TimelineItem {
+  type: EventType;
+  at: number;
+  /** Set for clicks. */
+  link: { label: string; kind: string } | null;
+}
+
+export interface SetStageRequest {
+  stage: Stage | null;
+}
+
+/** A link the user saved (résumé, LinkedIn, ...): clicks on it show this name. */
+export interface UserLink {
+  id: number;
+  name: string;
+  url: string;
+}
+
+export interface SaveUserLinkRequest {
+  name: string;
+  url: string;
+}
+
 export interface GoogleSignInRequest {
   /** Google ID token (JWT) from the OAuth implicit flow. */
   idToken: string;

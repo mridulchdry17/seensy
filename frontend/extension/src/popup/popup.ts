@@ -1,4 +1,5 @@
 import type { ActivityItem } from "../../../../shared/contracts";
+import { DASHBOARD_URL } from "../config";
 import { describeActivity, timeAgo } from "../shared/format";
 import { sendMessage } from "../shared/messages";
 import { getSettings, saveSettings, type AccountSession } from "../shared/settings";
@@ -21,7 +22,10 @@ const ui = {
   feed: el<HTMLUListElement>("feed"),
   feedEmpty: el("feed-empty"),
   feedError: el("feed-error"),
+  openDashboard: el<HTMLAnchorElement>("open-dashboard"),
 };
+
+ui.openDashboard.href = DASHBOARD_URL;
 
 const errorText = (error: unknown) => (error instanceof Error ? error.message : String(error));
 

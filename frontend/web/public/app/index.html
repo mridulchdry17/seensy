@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Seensy</title>
+    <meta name="description" content="Your Seensy board: who opened your emails and clicked your links." />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" />
+    <link rel="stylesheet" href="/app/app.css" />
+    <script type="module" src="/app/js/main.js"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="wrap">
+        <a class="logo" href="/app">
+          <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13l4 4L14 8" /><path d="M10 15l2 2 10-10" /></svg></span>seensy
+        </a>
+        <nav class="tabs" aria-label="App" hidden>
+          <a class="tab" href="#/board" data-route="board">Board</a>
+          <a class="tab" href="#/activity" data-route="activity">Activity</a>
+          <a class="tab" href="#/settings" data-route="settings">Settings</a>
+        </nav>
+        <div class="header-right" hidden>
+          <span id="tracking"></span>
+          <button class="btn ghost" type="button" id="blur" aria-pressed="false">privacy blur</button>
+          <span class="account pii" id="account"></span>
+        </div>
+      </div>
+    </header>
+    <div id="view" aria-live="polite"><p class="wrap loading">Loading…</p></div>
+    <noscript><p class="wrap loading">Seensy needs JavaScript to show your board.</p></noscript>
+  </body>
+</html>

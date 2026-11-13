@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "npm run check && wrangler deploy",
+    "deploy:staging": "npm run check && wrangler deploy --env staging",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "check": "npm run typecheck && npm run test",
     "db:migrate": "wrangler d1 migrations apply seensy --remote",
+    "db:migrate:staging": "wrangler d1 migrations apply seensy-staging --remote --env staging",
     "stats:site": "wrangler d1 execute seensy --remote --command \"SELECT name, COUNT(*) AS count, COUNT(DISTINCT ref) AS sources FROM site_events GROUP BY name ORDER BY count DESC\"",
     "stats:sources": "wrangler d1 execute seensy --remote --command \"SELECT CASE ref WHEN '' THEN '(direct)' ELSE ref END AS source, COUNT(*) AS views FROM site_events WHERE name = 'view' GROUP BY source ORDER BY views DESC\""
   },

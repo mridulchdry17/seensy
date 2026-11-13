@@ -14,5 +14,12 @@ export const INBOXSDK_APP_ID = "sdk_Test-seensy_d483fac5e9";
  */
 export const GOOGLE_CLIENT_ID = "81064856949-r3cb11tggrcg4v42qhpvo7fo4iqgq25t.apps.googleusercontent.com";
 
-/** How often the background worker retries queued calls and checks for new opens. */
-export const POLL_MINUTES = 1;
+/**
+ * How often the background worker retries queued calls and checks for new opens. Every check is
+ * one API request per signed-in account, so this sets most of the backend's load: 5 minutes keeps
+ * a few hundred daily users inside Cloudflare's free plan.
+ */
+export const POLL_MINUTES = 5;
+
+/** The Seensy web app (the board). */
+export const DASHBOARD_URL = "https://seensy.vercel.app/app";

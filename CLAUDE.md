@@ -63,6 +63,11 @@ frontend/extension/        Chrome MV3 extension (InboxSDK), built with esbuild
   src/popup/               toolbar popup (Google sign-in per account, default tracking, activity)
   src/shared/              extension-only helpers (messages, settings, ids, formatting)
   static/                  manifest, popup HTML/CSS, icons
+frontend/web/public/       Vercel static site (no build step)
+  index.html, landing.*    landing page + waitlist
+  app/                     web app at /app: sign-in, Board, Activity, Settings (plain ES modules)
+    js/api.js              the only place the web app calls the API (Bearer token)
+    js/config.js           picks prod or staging API from the page's hostname
 ```
 
 Legacy (phase 0, still in daily use until the extension replaces it) lives outside this repo
@@ -77,8 +82,31 @@ into this repo. Do not change its behaviour while the outreach campaign runs.
 | backend | `npm run check` | typecheck + unit tests |
 | backend | `npm run db:migrate` | apply D1 migrations (remote) |
 | backend | `npm run deploy` | deploy the Worker |
+| backend | `npm run db:migrate:staging` / `npm run deploy:staging` | same, on staging (`seensy-api-staging` + D1 `seensy-staging`) |
+| web | `vercel deploy` then `vercel alias set <url> seensy-staging.vercel.app` | staging site (preview; never `--prod` without the owner's OK) |
 | extension | `npm run check` | typecheck + unit tests |
 | extension | `npm run build` / `npm run dev` | build to `dist/` / rebuild on change |
+
+## Environments and release order
+
+| | Production | Staging |
+|---|---|---|
+| Worker | `seensy-api` | `seensy-api-staging` (`[env.staging]` in wrangler.toml) |
+| D1 | `seensy` | `seensy-staging` (test data only) |
+| Website | seensy.vercel.app | seensy-staging.vercel.app (Vercel preview alias) |
+
+The website and web app pick their API by hostname: seensy.vercel.app → production, anything
+else (staging, localhost:8000) → staging. Release to production in this order, each step
+additive so nothing breaks in between: D1 migration → Worker → website → extension (store review).
+Production is only touched with the owner's explicit OK.
+
+## Signals (Hot / Warm / Seen / No signal)
+
+Relative to each user's own emails, never fixed thresholds (`services/signal.ts`, unit tested).
+Opens < 30 min apart are one visit; each extra day with a visit adds 1; a click counts 3; weight
+halves every 3 days. Among emails with no stage and activity in the last 30 days: Hot = top 10%
+(max 3) and at least 2× the median; Warm = the next 20% above the median. Under 5 active emails,
+only a leader 1.5× ahead of the runner-up is Hot. A user-set stage removes the email from ranking.
 
 ## Accounts and sign-in
 
@@ -88,8 +116,13 @@ into this repo. Do not change its behaviour while the outreach campaign runs.
 - The extension keeps one session per Gmail address and only tracks a Gmail tab whose account
   is signed in. The fixed extension ID comes from the manifest `key`; the Google OAuth client's
   redirect URI is `https://<extension-id>.chromiumapp.org/`.
-- `GOOGLE_CLIENT_ID` lives in two places that must match: `backend/wrangler.toml` [vars] and
-  `frontend/extension/src/config.ts`.
+- `GOOGLE_CLIENT_ID` lives in places that must match: `backend/wrangler.toml` ([vars] and
+  [env.staging.vars]), `frontend/extension/src/config.ts` and `frontend/web/public/app/js/config.js`.
+- The web app signs in with Google Identity Services (ID token + nonce) against the same
+  `/api/auth/google`, keeps the session token in localStorage and sends it as Bearer. Its origins
+  must be listed as Authorized JavaScript origins on the OAuth client and in `WEB_ORIGINS`.
+- The extension answers the website (only origins in manifest `externally_connectable`) with
+  its version and signed-in accounts, so the web app can show "tracking on".
 
 ## Verdicts (how a hit is judged)
 

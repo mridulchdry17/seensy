@@ -32,6 +32,23 @@ export interface ActivityRow {
   tid: string;
   subject: string;
   recipients: string;
+  url: string | null;
+  label: string | null;
+  kind: string | null;
+}
+
+export interface BoardHitRow {
+  tid: string;
+  type: EventType;
+  lid: string | null;
+  at: number;
+  verdict: "person" | "early";
+}
+
+export interface TimelineRow {
+  type: EventType;
+  at: number;
+  url: string | null;
   label: string | null;
   kind: string | null;
 }
@@ -101,7 +118,7 @@ export const eventModel = {
   async personActivity(db: D1Database, userId: string, since: number, limit: number): Promise<ActivityRow[]> {
     const { results } = await db
       .prepare(
-        `SELECT ev.id, ev.type, ev.at, ev.tid, em.subject, em.recipients, l.label, l.kind
+        `SELECT ev.id, ev.type, ev.at, ev.tid, em.subject, em.recipients, l.url, l.label, l.kind
            FROM events ev
            JOIN emails em ON em.tid = ev.tid
            LEFT JOIN links l ON l.lid = ev.lid
@@ -110,6 +127,33 @@ export const eventModel = {
       )
       .bind(userId, since, limit)
       .all<ActivityRow>();
+    return results;
+  },
+
+  /** `person` and `early` hits on the user's emails sent since `since` (the web app's board). */
+  async hitsForEmailsSentSince(db: D1Database, userId: string, since: number): Promise<BoardHitRow[]> {
+    const { results } = await db
+      .prepare(
+        `SELECT ev.tid, ev.type, ev.lid, ev.at, ev.verdict
+           FROM events ev JOIN emails em ON em.tid = ev.tid
+          WHERE em.user_id = ? AND em.sent_at >= ? AND ev.verdict IN ('person', 'early')`,
+      )
+      .bind(userId, since)
+      .all<BoardHitRow>();
+    return results;
+  },
+
+  /** Opens and clicks by real people on one email, oldest first. */
+  async personTimeline(db: D1Database, tid: string): Promise<TimelineRow[]> {
+    const { results } = await db
+      .prepare(
+        `SELECT ev.type, ev.at, l.url, l.label, l.kind
+           FROM events ev LEFT JOIN links l ON l.lid = ev.lid
+          WHERE ev.tid = ? AND ev.verdict = 'person'
+          ORDER BY ev.at`,
+      )
+      .bind(tid)
+      .all<TimelineRow>();
     return results;
   },
 };

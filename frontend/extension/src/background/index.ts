@@ -3,7 +3,8 @@ import "@inboxsdk/core/background.js";
 import { POLL_MINUTES } from "../config";
 import { isAppMessage, type Reply } from "../shared/messages";
 import { handleMessage } from "./handlers";
-import { notifyNewActivity } from "./notifier";
+import { answerWebsite } from "./website";
+import { notifyNewActivity, startActivityWatch } from "./notifier";
 import { flush } from "./outbox";
 
 const POLL_ALARM = "seensy-poll";
@@ -17,8 +18,17 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (
   return true; // reply asynchronously
 });
 
+// The Seensy website asks whether the extension is here and which accounts are signed in.
+chrome.runtime.onMessageExternal.addListener((message: unknown, sender, sendResponse) => {
+  answerWebsite(message, sender).then(sendResponse, () => sendResponse(null));
+  return true; // reply asynchronously
+});
+
 const schedulePolling = () => chrome.alarms.create(POLL_ALARM, { periodInMinutes: POLL_MINUTES });
-chrome.runtime.onInstalled.addListener(schedulePolling);
+chrome.runtime.onInstalled.addListener(() => {
+  void schedulePolling();
+  void startActivityWatch();
+});
 chrome.runtime.onStartup.addListener(schedulePolling);
 
 chrome.alarms.onAlarm.addListener((alarm) => {

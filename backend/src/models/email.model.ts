@@ -1,3 +1,4 @@
+import type { Stage } from "../../../shared/contracts";
 import { placeholders } from "./sql";
 
 export interface EmailRecord {
@@ -7,6 +8,7 @@ export interface EmailRecord {
   recipients: string[];
   threadId: string | null;
   sentAt: number;
+  stage: Stage | null;
 }
 
 /** What the tracker needs to judge a hit on an email. */
@@ -22,6 +24,7 @@ interface EmailRow {
   recipients: string;
   thread_id: string | null;
   sent_at: number;
+  stage: Stage | null;
 }
 
 const toRecord = (row: EmailRow): EmailRecord => ({
@@ -31,10 +34,11 @@ const toRecord = (row: EmailRow): EmailRecord => ({
   recipients: JSON.parse(row.recipients) as string[],
   threadId: row.thread_id,
   sentAt: row.sent_at,
+  stage: row.stage,
 });
 
 export const emailModel = {
-  insertStatement(db: D1Database, email: Omit<EmailRecord, "threadId">): D1PreparedStatement {
+  insertStatement(db: D1Database, email: Omit<EmailRecord, "threadId" | "stage">): D1PreparedStatement {
     return db
       .prepare("INSERT INTO emails (tid, user_id, subject, recipients, sent_at) VALUES (?, ?, ?, ?, ?)")
       .bind(email.tid, email.userId, email.subject, JSON.stringify(email.recipients), email.sentAt);
@@ -77,5 +81,23 @@ export const emailModel = {
       .bind(userId, ...threadIds)
       .all<EmailRow>();
     return results.map(toRecord);
+  },
+
+  /** Emails sent since `since`, newest first (the web app's board). */
+  async listSentSince(db: D1Database, userId: string, since: number, limit: number): Promise<EmailRecord[]> {
+    const { results } = await db
+      .prepare("SELECT * FROM emails WHERE user_id = ? AND sent_at >= ? ORDER BY sent_at DESC LIMIT ?")
+      .bind(userId, since, limit)
+      .all<EmailRow>();
+    return results.map(toRecord);
+  },
+
+  /** Returns true when the email exists and belongs to the user. */
+  async setStage(db: D1Database, userId: string, tid: string, stage: Stage | null): Promise<boolean> {
+    const result = await db
+      .prepare("UPDATE emails SET stage = ? WHERE tid = ? AND user_id = ?")
+      .bind(stage, tid, userId)
+      .run();
+    return result.meta.changes > 0;
   },
 };

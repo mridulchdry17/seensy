@@ -1,5 +1,9 @@
 // Seensy landing page. No dependencies; the page is complete without any of this.
-const API_BASE = "https://seensy-api.mridulchdry.workers.dev";
+// Production backend on seensy.vercel.app; staging everywhere else, so testing never touches real data.
+const API_BASE =
+  location.hostname === "seensy.vercel.app"
+    ? "https://seensy-api.mridulchdry.workers.dev"
+    : "https://seensy-api-staging.mridulchdry.workers.dev";
 /** Paste the Chrome Web Store URL here once approved: the primary action becomes "Add to Chrome". */
 const STORE_URL = "";
 const DONE_KEY = "seensy:early-access";

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Seensy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "See who opened your email and which links they clicked, without counting your own views.",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhLFRadK2ZH/I26MafCd6wdJ73phjQCbqiA2lTMLW2IBRAqlSJ3T6AT+gTkm98DFj4tYGHVl+JkxEZAD3J0zs35uA1aJ+ZfW2AlHTi2YFTE99FwZLjfAxMOe3PO9u2FYjmH6buklmqMBFo3aTlH9igX7cqjf6ZBzU9ElWpb3rSNsc42xXJOeEDTR6RgjtN4yuy2D0m03ELHvJEqGiwcDBghexSQ5mittFSd4wY1SEdCpTemv2nsxkrgpJx6SQYians3KULYPNDtBwtbdE9xFqRC4K/wRTw9Cg3iVvZlyUn26z0KW6GB62voYZaTG81kumCNyEGd4YlMmza6MgGyn/LQIDAQAB",
   "permissions": [
@@ -30,6 +30,13 @@
       "run_at": "document_end"
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "https://seensy.vercel.app/*",
+      "https://seensy-staging.vercel.app/*",
+      "http://localhost/*"
+    ]
+  },
   "action": {
     "default_popup": "popup.html",
     "default_title": "Seensy",

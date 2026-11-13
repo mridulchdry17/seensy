@@ -16,3 +16,18 @@ migrations_dir = "migrations"
 GOOGLE_CLIENT_ID = "81064856949-r3cb11tggrcg4v42qhpvo7fo4iqgq25t.apps.googleusercontent.com"
 # Website origins allowed to call the API from a browser (comma-separated).
 WEB_ORIGINS = "https://seensy.vercel.app"
+
+# Staging: a separate Worker and database for testing the web app before release.
+#   npm run db:migrate:staging && npm run deploy:staging
+[env.staging]
+name = "seensy-api-staging"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "seensy-staging"
+database_id = "37252043-6d9f-4619-996d-498f2a81f23e"
+migrations_dir = "migrations"
+
+[env.staging.vars]
+GOOGLE_CLIENT_ID = "81064856949-r3cb11tggrcg4v42qhpvo7fo4iqgq25t.apps.googleusercontent.com"
+WEB_ORIGINS = "https://seensy-staging.vercel.app,http://localhost:8000"
