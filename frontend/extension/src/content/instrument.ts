@@ -38,8 +38,8 @@ function createPixel(doc: Document, src: string): HTMLImageElement {
 }
 
 /**
- * Rewrites every http(s) link the sender wrote to go through the tracker, adds one open pixel,
- * and returns the links to register. Pixels already in the body (e.g. in a quoted reply) are
+ * Rewrites every http(s) link the sender wrote to go through the tracker, adds one open pixel at
+ * the top, and returns the links to register. Pixels already in the body (e.g. in a quoted reply) are
  * removed so an old email never collects opens of a new one.
  */
 export function instrumentEmailBody(
@@ -62,6 +62,8 @@ export function instrumentEmailBody(
     anchor.setAttribute("href", apiBase + trackingPaths.click(lid));
   }
 
-  body.appendChild(createPixel(body.ownerDocument, apiBase + trackingPaths.pixel(tid)));
+  // First, not last: Gmail clips long messages ("View entire message"), and a pixel at the end
+  // of a clipped message never loads.
+  body.insertBefore(createPixel(body.ownerDocument, apiBase + trackingPaths.pixel(tid)), body.firstChild);
   return links;
 }

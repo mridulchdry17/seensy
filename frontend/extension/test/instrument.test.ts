@@ -39,6 +39,12 @@ describe("instrumentEmailBody", () => {
     expect(findOwnPixels(el, API).map((p) => p.tid)).toEqual([TID]);
   });
 
+  it("puts the pixel at the top, so Gmail clipping a long email can't cut it off", () => {
+    const el = body("<p>Hi</p><p>long signature…</p>");
+    instrumentEmailBody(el, TID, API, nextId);
+    expect(el.firstElementChild).toBe(findOwnPixels(el, API)[0]?.img);
+  });
+
   it("leaves an empty label when the link text is the URL itself", () => {
     const el = body(`<a href="https://github.com/me">https://github.com/me</a>`);
     expect(instrumentEmailBody(el, TID, API, nextId)[0]?.label).toBe("");

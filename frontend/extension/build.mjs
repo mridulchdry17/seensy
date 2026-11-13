@@ -41,6 +41,8 @@ if (watch) {
 if (store) {
   const manifest = JSON.parse(await readFile("dist/manifest.json", "utf8"));
   delete manifest.key;
+  // Staging and localhost are for development builds only.
+  manifest.externally_connectable.matches = ["https://seensy.vercel.app/*"];
   await writeFile("dist/manifest.json", `${JSON.stringify(manifest, null, 2)}\n`);
 
   await rm(STORE_ZIP, { force: true });
