@@ -9,8 +9,12 @@ describe("classifyOpen", () => {
     expect(classifyOpen({ at: SENT + EARLY_WINDOW_MS + 1, ua: GMAIL_PROXY, sentAt: SENT }, false)).toBe("person");
   });
 
-  it("marks opens inside the early window as early", () => {
-    expect(classifyOpen({ at: SENT + 5_000, ua: GMAIL_PROXY, sentAt: SENT }, false)).toBe("early");
+  it("counts a Gmail proxy open inside the early window as a person (Gmail only fetches on open)", () => {
+    expect(classifyOpen({ at: SENT + 5_000, ua: GMAIL_PROXY, sentAt: SENT }, false)).toBe("person");
+  });
+
+  it("marks other opens inside the early window as early", () => {
+    expect(classifyOpen({ at: SENT + 5_000, ua: "Mozilla/5.0 (Macintosh) Chrome/130", sentAt: SENT }, false)).toBe("early");
   });
 
   it("marks the owner's own view as self, even when early", () => {
@@ -39,6 +43,19 @@ describe("classifyClick", () => {
 
   it("marks a click burst across links as scanner", () => {
     expect(classifyClick(later, false, true)).toBe("scanner");
+  });
+
+  it("counts a phone browser's click inside the early window as a person", () => {
+    const iphone = "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_2 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1";
+    expect(classifyClick({ at: SENT + 30_000, ua: iphone, sentAt: SENT }, false, false)).toBe("person");
+  });
+
+  it("keeps a desktop-browser click inside the early window as early (scanners pose as desktop browsers)", () => {
+    expect(classifyClick({ at: SENT + 30_000, ua: "Mozilla/5.0 (Windows NT 10.0) Chrome/130", sentAt: SENT }, false, false)).toBe("early");
+  });
+
+  it("still marks a phone-looking click burst as scanner", () => {
+    expect(classifyClick({ at: SENT + 30_000, ua: "Mozilla/5.0 (iPhone)", sentAt: SENT }, false, true)).toBe("scanner");
   });
 
   it("prefers self over burst when the owner clicks quickly", () => {

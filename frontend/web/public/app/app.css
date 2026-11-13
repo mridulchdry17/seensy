@@ -198,7 +198,7 @@ table.rows { width: 100%; border-collapse: collapse; font-variant-numeric: tabul
 .drawer { flex: 1 1 340px; padding: 20px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 84px; max-height: calc(100vh - 100px); overflow-y: auto; }
 .drawer-head { display: flex; align-items: flex-start; gap: 10px; }
 .drawer-head > div { flex: 1; min-width: 0; }
-.drawer-head h3 { font-size: 20px; }
+.drawer-head h3 { font-size: 20px; overflow-wrap: anywhere; }
 .drawer-close { min-width: 44px; min-height: 44px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; font-size: 18px; }
 .drawer-section { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
 .stages { display: flex; gap: 6px; flex-wrap: wrap; }

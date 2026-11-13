@@ -11,6 +11,17 @@ export const CLICK_BURST_MS = 2_000;
 const SCANNER_UA =
   /barracuda|mimecast|proofpoint|ironport|messagelabs|symantec|trend ?micro|fireeye|zscaler|bingpreview|safelinks|microsoft office protection|python-requests|go-http-client|curl\/|wget\/|headlesschrome/i;
 
+/**
+ * Gmail fetches images through its proxy only when a person opens the email, so a proxied open
+ * is a reader even seconds after sending (scanners fetch directly, with their own user agent).
+ */
+const GMAIL_PROXY_UA = /GoogleImageProxy/i;
+/**
+ * Link scanners run on servers and sometimes pose as a desktop browser, never as a phone. A
+ * phone browser's click is a reader even seconds after sending.
+ */
+const PHONE_BROWSER_UA = /\b(iPhone|iPad|Android)\b/;
+
 export interface Hit {
   at: number;
   ua: string;
@@ -18,18 +29,19 @@ export interface Hit {
   sentAt: number | null;
 }
 
-function baseVerdict(hit: Hit): Verdict {
+/** `trustedEarly`: this kind of hit comes from a person even inside the early window. */
+function baseVerdict(hit: Hit, trustedEarly: RegExp): Verdict {
   if (SCANNER_UA.test(hit.ua)) return "scanner";
-  if (hit.sentAt !== null && hit.at - hit.sentAt < EARLY_WINDOW_MS) return "early";
-  return "person";
+  const early = hit.sentAt !== null && hit.at - hit.sentAt < EARLY_WINDOW_MS;
+  return early && !trustedEarly.test(hit.ua) ? "early" : "person";
 }
 
 export function classifyOpen(hit: Hit, ownerViewedNearby: boolean): Verdict {
-  return ownerViewedNearby ? "self" : baseVerdict(hit);
+  return ownerViewedNearby ? "self" : baseVerdict(hit, GMAIL_PROXY_UA);
 }
 
 export function classifyClick(hit: Hit, clickedByOwner: boolean, partOfBurst: boolean): Verdict {
   if (clickedByOwner) return "self";
   if (partOfBurst) return "scanner";
-  return baseVerdict(hit);
+  return baseVerdict(hit, PHONE_BROWSER_UA);
 }

@@ -42,8 +42,8 @@ export function openDrawer(drawer, email, account, { onClose, onStageChange }) {
       <div>
         <h3 class="pii">${esc(company)}</h3>
         <p class="muted pii" style="font-size: 13px; overflow-wrap: anywhere">${esc(email.recipients.join(", "))}</p>
+        <p style="margin-top: 6px">${tagHtml(email)}</p>
       </div>
-      ${tagHtml(email)}
       <button class="drawer-close" type="button" aria-label="Close timeline" data-close>×</button>
     </div>
     <p class="pii" style="font-weight: 700">${esc(email.subject || "(no subject)")}</p>
@@ -52,7 +52,7 @@ export function openDrawer(drawer, email, account, { onClose, onStageChange }) {
       <p class="mono">Timeline</p>
       <ul class="tl" id="tl"><li>${esc(when(email.sentAt))} · sent</li><li>loading…</li></ul>
     </div>
-    ${email.early ? `<p class="note">${email.early} hit${email.early > 1 ? "s" : ""} within a minute of sending ${email.early > 1 ? "aren't" : "isn't"} counted: usually a mail scanner, not a person.</p>` : ""}
+    ${email.early ? `<p class="note">${email.early} hit${email.early > 1 ? "s" : ""} in the first minute after sending ${email.early > 1 ? "aren't" : "isn't"} counted: usually a mail security scanner, or you checking the email straight away.</p>` : ""}
     <div class="drawer-section">
       <p class="mono">Stage</p>
       <div class="stages">${Object.entries(STAGE_TEXT)
