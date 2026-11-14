@@ -1,5 +1,5 @@
 import type { EmailSummary, RegisterEmailRequest } from "../../../shared/contracts";
-import { HttpError } from "../app/http";
+import { AppError, emailNotFound } from "./errors";
 import { emailModel, type EmailRecord } from "../models/email.model";
 import { eventModel } from "../models/event.model";
 import { linkModel } from "../models/link.model";
@@ -61,20 +61,21 @@ export const emailService = {
           kind: linkKind(link.url),
         }),
       ),
+      // In the same batch (one transaction): the email is never saved without its own early opens marked.
+      eventModel.relabelOpensStatement(db, input.tid, sentAt - PRE_REGISTER_SELF_MS, sentAt, "self"),
     ];
     try {
       await db.batch(statements);
-      await eventModel.relabelOpens(db, input.tid, sentAt - PRE_REGISTER_SELF_MS, sentAt, "self");
     } catch (error) {
       if (!isUniqueViolation(error)) throw error;
       if (await emailModel.isOwnedBy(db, user.id, input.tid)) return;
-      throw new HttpError(409, "This tracking ID is already in use. Send the email again to get a new one.");
+      throw new AppError("conflict", "This tracking ID is already in use. Send the email again to get a new one.");
     }
   },
 
   async attachThread(db: D1Database, user: User, tid: string, threadId: string): Promise<void> {
     const updated = await emailModel.setThreadId(db, user.id, tid, threadId);
-    if (!updated) throw new HttpError(404, "No tracked email with this ID on your account.");
+    if (!updated) throw emailNotFound();
   },
 
   async listSummaries(db: D1Database, user: User, threadIds?: string[]): Promise<EmailSummary[]> {

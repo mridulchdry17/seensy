@@ -1,8 +1,9 @@
 import type { ApiErrorBody } from "../../../shared/contracts";
+import { AppError, type ErrorKind } from "../services/errors";
 
 const NO_STORE = { "cache-control": "no-store, no-cache, must-revalidate, max-age=0" };
 
-/** An error a controller or service throws to produce a specific HTTP status. */
+/** An HTTP-layer error (auth middleware, request validation) with its status code. Services throw AppError. */
 export class HttpError extends Error {
   constructor(
     readonly status: number,
@@ -21,8 +22,17 @@ export function noContent(): Response {
   return new Response(null, { status: 204 });
 }
 
-export function errorResponse(error: HttpError): Response {
+const STATUS_OF: Record<ErrorKind, number> = {
+  invalid: 400,
+  unauthorized: 401,
+  not_found: 404,
+  conflict: 409,
+  unavailable: 503,
+};
+
+export function errorResponse(error: HttpError | AppError): Response {
   const body: ApiErrorBody = { error: error.message };
+  if (error instanceof AppError) return json(body, STATUS_OF[error.kind]);
   if (error.details !== undefined) body.details = error.details;
   return json(body, error.status);
 }

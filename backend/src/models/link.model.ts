@@ -21,15 +21,15 @@ export const linkModel = {
     return row ? { url: row.url, emailTid: row.email_tid } : null;
   },
 
-  /** Links in the user's emails sent since `since` (the web app's board). */
-  async listForEmailsSentSince(db: D1Database, userId: string, since: number): Promise<LinkRecord[]> {
+  /** Links in the user's newest `limit` emails sent since `since` (the web app's board). */
+  async listForEmailsSentSince(db: D1Database, userId: string, since: number, limit: number): Promise<LinkRecord[]> {
     const { results } = await db
       .prepare(
         `SELECT l.lid, l.email_tid, l.url, l.label, l.kind
-           FROM links l JOIN emails em ON em.tid = l.email_tid
-          WHERE em.user_id = ? AND em.sent_at >= ?`,
+           FROM links l
+           JOIN (SELECT tid FROM emails WHERE user_id = ? AND sent_at >= ? ORDER BY sent_at DESC LIMIT ?) em ON em.tid = l.email_tid`,
       )
-      .bind(userId, since)
+      .bind(userId, since, limit)
       .all<{ lid: string; email_tid: string; url: string; label: string; kind: string }>();
     return results.map((row) => ({ lid: row.lid, emailTid: row.email_tid, url: row.url, label: row.label, kind: row.kind }));
   },

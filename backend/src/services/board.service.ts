@@ -1,5 +1,5 @@
 import type { BoardEmail, BoardResponse, LinkClickSummary, Stage, TimelineItem } from "../../../shared/contracts";
-import { HttpError } from "../app/http";
+import { emailNotFound } from "./errors";
 import { emailModel } from "../models/email.model";
 import { eventModel } from "../models/event.model";
 import { linkModel } from "../models/link.model";
@@ -28,8 +28,8 @@ export const boardService = {
     const since = now - BOARD_WINDOW_MS;
     const [emails, hitRows, links, saved] = await Promise.all([
       emailModel.listSentSince(db, user.id, since, BOARD_LIMIT),
-      eventModel.hitsForEmailsSentSince(db, user.id, since),
-      linkModel.listForEmailsSentSince(db, user.id, since),
+      eventModel.hitsForEmailsSentSince(db, user.id, since, BOARD_LIMIT),
+      linkModel.listForEmailsSentSince(db, user.id, since, BOARD_LIMIT),
       userLinkModel.list(db, user.id),
     ]);
 
@@ -99,7 +99,7 @@ export const boardService = {
 
   /** Opens and clicks by real people on one of the user's emails, oldest first. */
   async timeline(db: D1Database, user: User, tid: string): Promise<TimelineItem[]> {
-    if (!(await emailModel.isOwnedBy(db, user.id, tid))) throw new HttpError(404, "No tracked email with this ID on your account.");
+    if (!(await emailModel.isOwnedBy(db, user.id, tid))) throw emailNotFound();
     const [rows, saved] = await Promise.all([eventModel.personTimeline(db, tid), userLinkModel.list(db, user.id)]);
     const nameOf = linkNamer(saved);
     return rows.map((row) => ({
@@ -110,6 +110,6 @@ export const boardService = {
   },
 
   async setStage(db: D1Database, user: User, tid: string, stage: Stage | null): Promise<void> {
-    if (!(await emailModel.setStage(db, user.id, tid, stage))) throw new HttpError(404, "No tracked email with this ID on your account.");
+    if (!(await emailModel.setStage(db, user.id, tid, stage))) throw emailNotFound();
   },
 };

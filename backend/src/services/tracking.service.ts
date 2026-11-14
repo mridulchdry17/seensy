@@ -1,5 +1,5 @@
 import type { SelfViewRequest } from "../../../shared/contracts";
-import { HttpError } from "../app/http";
+import { emailNotFound } from "./errors";
 import { emailModel } from "../models/email.model";
 import { eventModel } from "../models/event.model";
 import { linkModel } from "../models/link.model";
@@ -50,7 +50,7 @@ export const trackingService = {
   /** The owner viewed their own email: remember it and re-label any open that already landed. */
   async recordSelfView(db: D1Database, user: User, input: SelfViewRequest): Promise<void> {
     if (!(await emailModel.isOwnedBy(db, user.id, input.tid))) {
-      throw new HttpError(404, "No tracked email with this ID on your account.");
+      throw emailNotFound();
     }
     const now = Date.now();
     const at = Math.min(now, Math.max(input.at, now - SELF_VIEW_MAX_AGE_MS));

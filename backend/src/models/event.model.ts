@@ -61,12 +61,16 @@ export const eventModel = {
       .run();
   },
 
+  /** Re-labels opens of an email inside a time window. A statement, so it can join a batch (one transaction). */
+  relabelOpensStatement(db: D1Database, tid: string, from: number, to: number, verdict: Verdict): D1PreparedStatement {
+    return db
+      .prepare("UPDATE events SET verdict = ? WHERE tid = ? AND type = 'open' AND at BETWEEN ? AND ?")
+      .bind(verdict, tid, from, to);
+  },
+
   /** Re-labels opens of an email inside a time window (used when the owner's self-view arrives late). */
   async relabelOpens(db: D1Database, tid: string, from: number, to: number, verdict: Verdict): Promise<void> {
-    await db
-      .prepare("UPDATE events SET verdict = ? WHERE tid = ? AND type = 'open' AND at BETWEEN ? AND ?")
-      .bind(verdict, tid, from, to)
-      .run();
+    await eventModel.relabelOpensStatement(db, tid, from, to, verdict).run();
   },
 
   /** Clicks on other links of the same email since `since`, i.e. a scanner's burst. */
@@ -130,15 +134,16 @@ export const eventModel = {
     return results;
   },
 
-  /** `person` and `early` hits on the user's emails sent since `since` (the web app's board). */
-  async hitsForEmailsSentSince(db: D1Database, userId: string, since: number): Promise<BoardHitRow[]> {
+  /** `person` and `early` hits on the user's newest `limit` emails sent since `since` (the web app's board). */
+  async hitsForEmailsSentSince(db: D1Database, userId: string, since: number, limit: number): Promise<BoardHitRow[]> {
     const { results } = await db
       .prepare(
         `SELECT ev.tid, ev.type, ev.lid, ev.at, ev.verdict
-           FROM events ev JOIN emails em ON em.tid = ev.tid
-          WHERE em.user_id = ? AND em.sent_at >= ? AND ev.verdict IN ('person', 'early')`,
+           FROM events ev
+           JOIN (SELECT tid FROM emails WHERE user_id = ? AND sent_at >= ? ORDER BY sent_at DESC LIMIT ?) em ON em.tid = ev.tid
+          WHERE ev.verdict IN ('person', 'early')`,
       )
-      .bind(userId, since)
+      .bind(userId, since, limit)
       .all<BoardHitRow>();
     return results;
   },
