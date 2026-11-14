@@ -1,5 +1,6 @@
 import { preflight, withCors } from "./app/cors";
 import { HttpError, errorResponse, json } from "./app/http";
+import { AppError } from "./services/errors";
 import { router } from "./routes";
 import type { Env, RequestContext } from "./types";
 
@@ -18,7 +19,7 @@ async function route(request: Request, env: Env, ctx: ExecutionContext): Promise
   try {
     return await match.handler(context);
   } catch (error) {
-    if (error instanceof HttpError) return errorResponse(error);
+    if (error instanceof HttpError || error instanceof AppError) return errorResponse(error);
     console.error("Unhandled error", request.method, url.pathname, error);
     return json({ error: "Something went wrong on our side. Try again in a minute." }, 500);
   }

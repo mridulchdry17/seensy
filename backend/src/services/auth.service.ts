@@ -1,6 +1,6 @@
 import type { GoogleSignInRequest, SignInResponse } from "../../../shared/contracts";
 import { randomToken, sha256Hex } from "../app/crypto";
-import { HttpError } from "../app/http";
+import { AppError } from "./errors";
 import { sessionModel } from "../models/session.model";
 import { userModel } from "../models/user.model";
 import type { User } from "../types";
@@ -17,14 +17,14 @@ async function findOrCreateUser(db: D1Database, identity: GoogleIdentity, now: n
     // Account created before Google sign-in (same email): link it on first sign-in.
     await userModel.linkGoogle(db, existing.id, identity.sub, identity.name);
   } else if (existing.googleSub !== identity.sub) {
-    throw new HttpError(409, "This email is linked to a different Google account.");
+    throw new AppError("conflict", "This email is linked to a different Google account.");
   }
   return existing;
 }
 
 export const authService = {
   async signInWithGoogle(db: D1Database, clientId: string, input: GoogleSignInRequest): Promise<SignInResponse> {
-    if (!clientId) throw new HttpError(503, "Google sign-in isn't set up on the server yet.");
+    if (!clientId) throw new AppError("unavailable", "Google sign-in isn't set up on the server yet.");
     const identity = await verifyGoogleIdToken(input.idToken, clientId, input.nonce);
     const now = Date.now();
     const user = await findOrCreateUser(db, identity, now);

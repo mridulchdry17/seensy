@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
-import { HttpError } from "../app/http";
+import { AppError } from "./errors";
 
 // Google's signing keys; jose caches them and refetches when Google rotates keys.
 const GOOGLE_KEYS = createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs"));
@@ -11,7 +11,7 @@ export interface GoogleIdentity {
   name: string;
 }
 
-const rejected = (why: string) => new HttpError(401, `Google sign-in was rejected: ${why}. Try signing in again.`);
+const rejected = (why: string) => new AppError("unauthorized", `Google sign-in was rejected: ${why}. Try signing in again.`);
 
 /** Checks the claims jose doesn't: a verified email and our nonce (stops token replay). */
 export function identityFromClaims(claims: JWTPayload, expectedNonce: string): GoogleIdentity {

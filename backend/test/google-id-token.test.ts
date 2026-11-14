@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HttpError } from "../src/app/http";
+import { AppError } from "../src/services/errors";
 import { identityFromClaims } from "../src/services/google-id-token";
 
 const NONCE = "n0nce-n0nce-n0nce-1234";
@@ -21,7 +21,7 @@ describe("identityFromClaims", () => {
   });
 
   it("rejects a token issued for a different sign-in request (nonce mismatch)", () => {
-    expect(() => identityFromClaims(claims, "another-nonce-123456")).toThrow(HttpError);
+    expect(() => identityFromClaims(claims, "another-nonce-123456")).toThrow(AppError);
   });
 
   it("rejects an unverified email", () => {
