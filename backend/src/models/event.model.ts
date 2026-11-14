@@ -42,7 +42,6 @@ export interface BoardHitRow {
   type: EventType;
   lid: string | null;
   at: number;
-  verdict: "person" | "early";
 }
 
 export interface TimelineRow {
@@ -61,16 +60,22 @@ export const eventModel = {
       .run();
   },
 
-  /** Re-labels opens of an email inside a time window. A statement, so it can join a batch (one transaction). */
-  relabelOpensStatement(db: D1Database, tid: string, from: number, to: number, verdict: Verdict): D1PreparedStatement {
-    return db
-      .prepare("UPDATE events SET verdict = ? WHERE tid = ? AND type = 'open' AND at BETWEEN ? AND ?")
-      .bind(verdict, tid, from, to);
-  },
-
   /** Re-labels opens of an email inside a time window (used when the owner's self-view arrives late). */
   async relabelOpens(db: D1Database, tid: string, from: number, to: number, verdict: Verdict): Promise<void> {
-    await eventModel.relabelOpensStatement(db, tid, from, to, verdict).run();
+    await db
+      .prepare("UPDATE events SET verdict = ? WHERE tid = ? AND type = 'open' AND at BETWEEN ? AND ?")
+      .bind(verdict, tid, from, to)
+      .run();
+  },
+
+  /**
+   * Opens judged `self` only because the email wasn't registered yet, from before `before`, go back
+   * to `person`. A statement, so it joins the registration batch (one transaction).
+   */
+  restoreOpensBeforeStatement(db: D1Database, tid: string, before: number): D1PreparedStatement {
+    return db
+      .prepare("UPDATE events SET verdict = 'person' WHERE tid = ? AND type = 'open' AND verdict = 'self' AND at < ?")
+      .bind(tid, before);
   },
 
   /** Clicks on other links of the same email since `since`, i.e. a scanner's burst. */
@@ -134,14 +139,14 @@ export const eventModel = {
     return results;
   },
 
-  /** `person` and `early` hits on the user's newest `limit` emails sent since `since` (the web app's board). */
+  /** Hits by real people (`person`) on the user's newest `limit` emails sent since `since` (the web app's board). */
   async hitsForEmailsSentSince(db: D1Database, userId: string, since: number, limit: number): Promise<BoardHitRow[]> {
     const { results } = await db
       .prepare(
-        `SELECT ev.tid, ev.type, ev.lid, ev.at, ev.verdict
+        `SELECT ev.tid, ev.type, ev.lid, ev.at
            FROM events ev
            JOIN (SELECT tid FROM emails WHERE user_id = ? AND sent_at >= ? ORDER BY sent_at DESC LIMIT ?) em ON em.tid = ev.tid
-          WHERE ev.verdict IN ('person', 'early')`,
+          WHERE ev.verdict = 'person'`,
       )
       .bind(userId, since, limit)
       .all<BoardHitRow>();

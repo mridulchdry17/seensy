@@ -52,7 +52,6 @@ export function openDrawer(drawer, email, account, { onClose, onStageChange }) {
       <p class="mono">Timeline</p>
       <ul class="tl" id="tl"><li>${esc(when(email.sentAt))} · sent</li><li>loading…</li></ul>
     </div>
-    ${email.early ? `<p class="note">${email.early} hit${email.early > 1 ? "s" : ""} in the first minute after sending ${email.early > 1 ? "aren't" : "isn't"} counted: usually a mail security scanner, or you checking the email straight away.</p>` : ""}
     <div class="drawer-section">
       <p class="mono">Stage</p>
       <div class="stages">${Object.entries(STAGE_TEXT)

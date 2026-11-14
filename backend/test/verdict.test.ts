@@ -25,8 +25,12 @@ describe("classifyOpen", () => {
     expect(classifyOpen({ at: SENT + 600_000, ua: "Mimecast Link Inspector", sentAt: SENT }, false)).toBe("scanner");
   });
 
-  it("treats a hit on an unregistered email as a person", () => {
-    expect(classifyOpen({ at: SENT, ua: GMAIL_PROXY, sentAt: null }, false)).toBe("person");
+  it("marks a hit on a not-yet-registered email as self (the sender's browser at Send)", () => {
+    expect(classifyOpen({ at: SENT, ua: "Mozilla/5.0 (Macintosh) Chrome/157", sentAt: null }, false)).toBe("self");
+  });
+
+  it("still marks a known scanner on a not-yet-registered email as scanner", () => {
+    expect(classifyOpen({ at: SENT, ua: "Mimecast Link Inspector", sentAt: null }, false)).toBe("scanner");
   });
 });
 
