@@ -25,13 +25,17 @@ const PHONE_BROWSER_UA = /\b(iPhone|iPad|Android)\b/;
 export interface Hit {
   at: number;
   ua: string;
-  /** Null when the hit arrives before the email is registered. */
+  /** Null when the hit arrives before the email is registered (see baseVerdict). */
   sentAt: number | null;
 }
 
 /** `trustedEarly`: this kind of hit comes from a person even inside the early window. */
 function baseVerdict(hit: Hit, trustedEarly: RegExp): Verdict {
   if (SCANNER_UA.test(hit.ua)) return "scanner";
+  // Registration fires the moment Send is clicked, before delivery, so a hit on an unregistered
+  // email is the sender's own browser loading the pixel it just inserted. (A registration that
+  // arrives late from the retry queue gives older hits back: emailService.register.)
+  if (hit.sentAt === null) return "self";
   const early = hit.sentAt !== null && hit.at - hit.sentAt < EARLY_WINDOW_MS;
   return early && !trustedEarly.test(hit.ua) ? "early" : "person";
 }

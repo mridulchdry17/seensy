@@ -8,10 +8,9 @@ import { linkKind, linkLabel } from "./link-kind";
 
 const RECENT_LIMIT = 50;
 /**
- * The sender's own browser loads the pixel while Gmail sends, sometimes a moment before the
- * email is registered. Hits that early can't be the recipient (it isn't delivered yet), so on
- * registration they are relabelled as the owner's. Kept short so a registration delayed by the
- * retry queue never swallows a real open.
+ * Hits on an email that isn't registered yet are judged the sender's own (verdict.ts): their
+ * browser loads the pixel at Send, a moment before registration. If registration comes late (the
+ * retry queue), hits older than this before it were real opens after all and are given back.
  */
 const PRE_REGISTER_SELF_MS = 2 * 60_000;
 
@@ -61,8 +60,8 @@ export const emailService = {
           kind: linkKind(link.url),
         }),
       ),
-      // In the same batch (one transaction): the email is never saved without its own early opens marked.
-      eventModel.relabelOpensStatement(db, input.tid, sentAt - PRE_REGISTER_SELF_MS, sentAt, "self"),
+      // Same batch (one transaction), so the email is never saved without this correction.
+      eventModel.restoreOpensBeforeStatement(db, input.tid, sentAt - PRE_REGISTER_SELF_MS),
     ];
     try {
       await db.batch(statements);

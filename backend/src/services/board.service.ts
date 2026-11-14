@@ -16,7 +16,6 @@ const BOARD_LIMIT = 300;
 
 interface EmailHits {
   hits: Hit[];
-  early: number;
   /** Clicks per link id, in first-click order (Map keeps insertion order). */
   clicksByLid: Map<string, number>;
 }
@@ -42,12 +41,8 @@ export const boardService = {
 
     const byTid = new Map<string, EmailHits>();
     for (const row of [...hitRows].sort((a, b) => a.at - b.at)) {
-      const entry = byTid.get(row.tid) ?? { hits: [], early: 0, clicksByLid: new Map<string, number>() };
+      const entry = byTid.get(row.tid) ?? { hits: [], clicksByLid: new Map<string, number>() };
       byTid.set(row.tid, entry);
-      if (row.verdict === "early") {
-        entry.early += 1;
-        continue;
-      }
       entry.hits.push({ type: row.type, at: row.at });
       if (row.type === "click" && row.lid) entry.clicksByLid.set(row.lid, (entry.clicksByLid.get(row.lid) ?? 0) + 1);
       if (isYesterday(row.at)) {
@@ -83,7 +78,6 @@ export const boardService = {
         openDays: eng.days,
         clicks,
         lastActivityAt: eng.lastAt,
-        early: entry?.early ?? 0,
       };
     });
 

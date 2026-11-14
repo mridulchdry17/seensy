@@ -103,8 +103,6 @@ export interface BoardEmail {
   openDays: number;
   clicks: LinkClickSummary[];
   lastActivityAt: number | null;
-  /** Hits within a minute of sending (maybe a scanner); not counted anywhere else. */
-  early: number;
 }
 
 export interface BoardResponse {

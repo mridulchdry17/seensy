@@ -4,7 +4,10 @@ import { STORE_URL } from "../config.js";
 import { esc } from "../format.js";
 
 const CHECK_EVERY_MS = 15_000;
+/** Asking the extension stays inside the browser, so it can be frequent. */
+const EXTENSION_CHECK_EVERY_MS = 3_000;
 let timer;
+let extensionTimer;
 
 export async function renderSetup(view, app, onFirstEmail) {
   const extension = await app.extension;
@@ -62,9 +65,25 @@ export async function renderSetup(view, app, onFirstEmail) {
       </div>
     </main>`;
 
+  const leftSetup = () => !view.isConnected || (location.hash && !location.hash.startsWith("#/board"));
+
+  // Step 2 turns green on its own once the user signs in to the extension (no reload needed).
+  clearInterval(extensionTimer);
+  if (!extensionReady) {
+    let asking = false;
+    extensionTimer = setInterval(async () => {
+      if (leftSetup()) return clearInterval(extensionTimer);
+      if (asking) return;
+      asking = true;
+      const now = await app.refreshExtension();
+      asking = false;
+      if (now?.accounts.includes(account) && !leftSetup()) renderSetup(view, app, onFirstEmail);
+    }, EXTENSION_CHECK_EVERY_MS);
+  }
+
   clearInterval(timer);
   timer = setInterval(async () => {
-    if (!view.isConnected || (location.hash && !location.hash.startsWith("#/board"))) return clearInterval(timer);
+    if (leftSetup()) return clearInterval(timer);
     try {
       const board = await api.board();
       if (board.emails.length > 0) {

@@ -13,7 +13,16 @@ const view = document.getElementById("view");
 const routes = { board: renderBoard, activity: renderActivity, settings: renderSettings };
 
 /** Shared with every view: who is signed in and whether the extension is in this browser. */
-const app = { session: currentSession(), extension: detectExtension() };
+const app = {
+  session: currentSession(),
+  extension: detectExtension(),
+  /** Asks the extension again (e.g. the user just signed in to it) and updates the header tag. */
+  async refreshExtension() {
+    app.extension = detectExtension();
+    await showTrackingTag();
+    return app.extension;
+  },
+};
 
 function setupBlur() {
   const button = document.getElementById("blur");
